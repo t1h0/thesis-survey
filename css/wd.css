@@ -1,0 +1,7 @@
+.wd {
+    cursor: pointer;
+    border-bottom: 0.25em dotted #646464;
+}
+.wd-active{
+    border-bottom: 0.25em solid #646464 !important;
+}
