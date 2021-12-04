@@ -9,3 +9,11 @@ body {
 #heading{
 	font-size:1.1em;
 }
+#article-container{
+	line-height:1.7em !important;
+}
+.article-navigator {
+	color: #fff;
+	background-color: steelblue;
+	border-color: steelblue;
+}

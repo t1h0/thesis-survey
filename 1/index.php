@@ -28,7 +28,7 @@
   <header class="container-fluid text-center sticky-top" id="ui">
     <div class="row justify-content-between">
       <div class="col-3 p-0">
-        <a id="prev" class="btn btn-info w-100 h-100 d-flex justify-content-center align-items-center article-navigator disabled" href="#articleContainer" role="button" data-slide="prev">
+        <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator disabled" href="#article-container" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon align-middle" aria-hidden="true"></span>
           <span class="sr-only align-middle">Previous</span>
         </a>
@@ -37,7 +37,7 @@
         <p class="m-0" id="heading">Article <span id="articleId">A</span></p>
       </div>
       <div class="col-3 p-0">
-        <a id="next" class="btn btn-info w-100 h-100 d-flex justify-content-center align-items-center article-navigator" href="#articleContainer" role="button" data-slide="next">
+        <a id="next" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator" href="#article-container" role="button" data-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="sr-only">Next</span>
         </a>
@@ -60,7 +60,7 @@
   <div class="container">
     <div class="row py-2" id="article">
       <div class="col py-1 px-3">
-        <div id="articleContainer" class="carousel slide" data-ride="carousel" data-interval="false">
+        <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
           <div class="carousel-inner">
             <div class="carousel-item active">
               <p><span class="sd"><span class="wd" wdlr="100" wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit
