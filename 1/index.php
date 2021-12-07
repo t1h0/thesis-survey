@@ -7,19 +7,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
   <link rel="stylesheet" href="css/style.css">
   <?php
-  $s = [
-    "wdlr" => isset($_GET['wdlr']) && $_GET['wdlr'] == 1,
-    "wde" => isset($_GET['wde']) && $_GET['wde']  == 1,
-    "wds" => isset($_GET['wds']) && $_GET['wds']  == 1,
-    "sd" => isset($_GET['sd']) && $_GET['sd']  == 1,
-  ];
-  $s["wd"] = ($s["wdlr"] || $s["wde"] || $s["wds"]);
-  foreach ($s as $k => $v) {
-    if ($v) {
-      echo '<link rel="stylesheet" href="css/' . $k . '.css">
-      ';
-    }
-  };
+  $s = [];
+  foreach (["wdlr", "wde", "wds", "sd"] as $i) { // validating get variables
+    $s[$i] = isset($_GET[$i]) && $_GET[$i] == 1; // tranforming into local array
+    if ($s[$i]) echo '<link rel="stylesheet" href="css/' . $k . '.css">
+    '; // including respective css-files
+  }
+  $s["wd"] = ($s["wdlr"] || $s["wde"] || $s["wds"]); // adding general wd css
+  if ($s["wd"]) echo '<link rel="stylesheet" href="css/wd.css">
+  ';
   ?>
   <title></title>
 </head>

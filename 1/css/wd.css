@@ -1,9 +1,12 @@
+:root{
+    --dark-gray:#454545;
+}
 .wd {
     cursor: pointer;
-    border-bottom: 0.2em dotted gray;
+    border-bottom: 0.2em dotted var(--dark-gray);
 }
 .wd-active{
-    border-bottom: 0.2em solid gray !important;
+    border-bottom: 0.2em solid var(--dark-gray) !important;
 }
 .wd-component{
     border-color:steelblue !important;
@@ -17,8 +20,18 @@
     height:0;
     border-left:0.5em solid transparent;
     border-right:0.5em solid transparent;
-    border-bottom:0.7em solid #646464;
+    border-bottom:0.7em solid var(--dark-gray);
     margin-top:0.7em;
     margin-left: calc(50% - 0.5em);
     transition: margin-left 1s;
+    z-index:1;
+}
+.wd-bar-name{
+    z-index:0;
+    position:absolute;
+    margin-left:auto;
+    margin-right:auto;
+    left:0;
+    right:0;
+    content:"bla";
 }
