@@ -29,7 +29,9 @@ $(document).ready(function() {
         $(".sd").dblclick(function() { // on rightclick on sentence
             $(this).toggleClass("sd-active");
             if (wd) { // word detection active?
-                $(this).find("span").removeClass("wd-active").attr("clickable", ($(this).attr("clickable") == 1 ? 0 : 1)); //make words inside of sentence clickable
+                $(this).find("span").each(function() {
+                    $(this).removeClass("wd-active").attr("clickable", ($(this).attr("clickable") == 1 ? 0 : 1)); //make words inside of sentence clickable
+                });
             }
         });
     } else { // only word detection active?
