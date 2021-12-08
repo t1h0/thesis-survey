@@ -1,0 +1,7 @@
+.sd {
+    cursor: pointer;
+}
+
+.sd-active {
+    background-color: #e0e0e0 !important;
+}

@@ -1,0 +1,11 @@
+:root {
+    --dark-gray: #454545;
+}
+
+.wd {
+    cursor: pointer;
+}
+
+.wd-active {
+    border-bottom: 0.2em dotted var(--dark-gray);
+}
