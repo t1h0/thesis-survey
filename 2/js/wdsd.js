@@ -1,5 +1,5 @@
 wd = true;
-sd = false;
+sd = true;
 
 function detectWords(text, clickable = 1) {
     function surroundWords(word) {
