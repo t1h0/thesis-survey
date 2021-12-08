@@ -10,6 +10,7 @@
 }
 .wd-component{
     border-color:steelblue !important;
+    width:360px !important;
 }
 .wd-bar{
     background-color: lightsteelblue !important;
