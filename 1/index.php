@@ -30,7 +30,7 @@
         </a>
       </div>
       <div class="col d-flex justify-content-center align-items-center">
-        <p class="m-0" id="heading">Article <span id="articleId">A</span></p>
+        <p class="m-0 font-weight-bolder" id="heading">Article <span id="articleId">A</span></p>
       </div>
       <div class="col-3 p-0">
         <a id="next" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator" href="#article-container" role="button" data-slide="next">

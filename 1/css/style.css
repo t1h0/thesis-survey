@@ -1,19 +1,24 @@
 /* CSS Document */
+
 @import "https://fonts.googleapis.com/css?family=Open+Sans";
 body {
-	font-family: 'Open Sans', sans-serif !important;
+    font-family: 'Open Sans', sans-serif !important;
 }
+
 #ui {
-	background-color: #ececec !important;
+    background-color: #ececec !important;
 }
-#heading{
-	font-size:1.1em;
+
+#heading {
+    font-size: 1.1em;
 }
-#article-container{
-	line-height:1.7em !important;
+
+#article-container {
+    line-height: 1.7em !important;
 }
+
 .article-navigator {
-	color: #fff;
-	background-color: steelblue;
-	border-color: steelblue;
+    color: #fff;
+    background-color: steelblue;
+    border-color: steelblue;
 }
