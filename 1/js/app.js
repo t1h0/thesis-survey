@@ -109,6 +109,7 @@ function go(toCase) {
             break;
         case 9:
             unblock();
+            block($("header, main"), true);
             $(".wd").on("click.temp", go);
             instr("<p>If you click on a biased phrase (highlighted with a dotted underline), you will be provided with additional information about the phrase.</p><p>Try it!</p>");
             control(null);
@@ -137,7 +138,7 @@ function go(toCase) {
         case 13:
             $("#wd-component-e").removeClass("app-show-highlight");
             if (s["wds"]) {
-                instr("The Synonyms Area shows you alternative phrases with the same meaning but neutral in nature.")
+                instr("The Synonyms Box shows you alternative phrases with the same meaning but neutral in nature.")
                 $("#wd-component-s").addClass("app-show-highlight");
                 break;
             }
@@ -145,6 +146,7 @@ function go(toCase) {
         case 14:
             $("#wd-component-s").removeClass("app-show-highlight");
             unblock();
+            block($("header, main"), true);
             $(".article-navigator, main").on("click.temp", go);
             instr("<p>Click anywhere on the article besides a biased phrase or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
             control(null);
@@ -155,9 +157,17 @@ function go(toCase) {
             control();
             break;
         case 16:
-            instr("Finally, to continue reading and see the full article, scroll up and down on your device.");
+            unblock();
+            control(null);
+            instr("<p>Finally, to continue reading and see the full article, scroll up and down on your device.</p><p>Try it!</p>");
+            $(window).on("scroll.temp", go);
             break;
         case 17:
+            instr("Very good!");
+            $(window).off("scroll.temp");
+            control();
+            break;
+        case 18:
             instr("<p>Please take some time now to make yourself familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
             control("Start");
             break;
