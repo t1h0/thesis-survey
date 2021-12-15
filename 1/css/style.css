@@ -6,11 +6,14 @@ body {
     user-select: none;
 }
 
-#ui {
+
+/* UI */
+
+.ui {
     background-color: #ececec !important;
 }
 
-#heading {
+#article-heading {
     font-size: 1.1em;
 }
 
@@ -18,8 +21,67 @@ body {
     line-height: 1.7em !important;
 }
 
-.article-navigator {
+.button {
     color: #fff;
     background-color: steelblue;
     border-color: steelblue;
+}
+
+
+/* Main */
+
+main {
+    background-color: #fff;
+}
+
+
+/* App  */
+
+#app {
+    position: fixed;
+    z-index: 5000;
+    bottom: 0;
+    height: 25vh !important;
+    background-color: #fff !important;
+    border-style: solid !important;
+    border-width: 0.5rem 0 0 0 !important;
+    border-color: steelblue !important;
+    background-color: lightsteelblue !important;
+}
+
+#app-button {
+    height: 100%;
+    width: 25%;
+}
+
+.app-show {
+    position: relative !important;
+    z-index: 3000 !important;
+}
+
+.app-show-highlight {
+    background-color: #fff !important;
+}
+
+.app-show-temp {
+    position: fixed !important;
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.blocker {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    /* display: none; */
+    background-color: black;
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+#transparentBlocker {
+    z-index: 4000 !important;
 }

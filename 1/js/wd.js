@@ -45,7 +45,7 @@ $(document).ready(function() {
             $("#wds").text($(this).attr("wds"));
         }
     });
-    $("div[role='main']").click(function() {
+    $("main").click(function() {
         resetWords();
     });
 });
