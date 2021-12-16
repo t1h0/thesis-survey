@@ -1,6 +1,10 @@
 /* CSS Document */
 
 @import "https://fonts.googleapis.com/css?family=Open+Sans";
+:root {
+    --app-space-y: 1.3rem;
+}
+
 body {
     font-family: 'Open Sans', sans-serif !important;
     user-select: none;
@@ -33,6 +37,7 @@ body {
 main {
     background-color: #fff;
     padding-bottom: 25vh;
+    transition: padding-bottom 1s;
 }
 
 
@@ -42,17 +47,44 @@ main {
     position: fixed;
     z-index: 5000;
     bottom: 0;
-    height: 25vh !important;
+    /* height: 25vh !important; */
     background-color: #fff !important;
     border-style: solid !important;
     border-width: 0.5rem 0 0 0 !important;
     border-color: steelblue !important;
     background-color: lightsteelblue !important;
+    transition: height 1s;
+}
+
+#app-instructions {
+    padding-top: 0.5rem;
+    padding-bottom: var(--app-space-y);
+    max-height: calc(25vh - 2rem);
+    overflow-y: scroll;
+}
+
+#app-instructions-row {
+    position: relative;
+}
+
+
+/* Blurs out the scrollable content */
+
+#app-instructions-row::before {
+    z-index: 10;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: var(--app-space-y);
+    left: 0;
+    bottom: 0;
+    background-image: linear-gradient(to top, lightsteelblue, transparent 120%);
 }
 
 #app-button {
-    height: 100%;
-    width: 25%;
+    height: 2rem;
+    width: 8rem;
+    padding: 0 !important;
 }
 
 .app-show {
@@ -62,6 +94,10 @@ main {
 
 .app-show-highlight {
     background-color: #fff !important;
+}
+
+.app-show-highlight-sb {
+    background-color: steelblue !important;
 }
 
 .app-show-temp {
