@@ -46,7 +46,6 @@ function addContent(content) {
         $(".system").removeClass("d-none");
         $("#additional-content").addClass("d-none");
     }
-    $("main").css("padding-bottom", $("#app").outerHeight());
 }
 
 function instr(instruction) {
