@@ -7,21 +7,21 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <?php
-  $s = [];
-  foreach (["wdlr", "wde", "wds", "sd", "sd"] as $i) { // validating get variables
-    $s[$i] = isset($_GET[$i]) && $_GET[$i] == 1; // tranforming into local array
-    if ($s[$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
+    $s = [];
+    foreach (["wdlr", "wde", "wds", "sd", "wd"] as $i) { // validating get variables
+        $s[$i] = isset($_GET[$i]) && $_GET[$i] == 1; // tranforming into local array
+        if ($s[$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
     '; // including respective css-files
-  }
-  $s["wd"] = ($s["wdlr"] || $s["wde"] || $s["wds"]); // wd is always true if one of these are true
-  if ($s["wd"]) echo '<link rel="stylesheet" href="css/wd.css"> 
+    }
+    $s["wd"] = ($s["wdlr"] || $s["wde"] || $s["wds"] || $s["wd"]); // wd is always true if one of these are true
+    if ($s["wd"]) echo '<link rel="stylesheet" href="css/wd.css"> 
   '; // adding general wd css
-  ?>
-        <title></title>
+    ?>
+    <title></title>
 </head>
 
 <body>
-    <header class="container-fluid text-center sticky-top ui" id="ui">
+    <header class="container-fluid text-center sticky-top system ui" id="ui">
         <div class="row justify-content-between ui" id="reader-control">
             <div class="col-3 p-0">
                 <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button disabled" href="#article-container" role="button" data-slide="prev">
@@ -40,44 +40,44 @@
             </div>
         </div>
         <?php
-    if ($s["wd"]) {
-      echo '<div class="row justify-content-around mt-2 ui" id="analysis-bar">
+        if ($s["wd"]) {
+            echo '<div class="row justify-content-around mt-2 ui" id="analysis-bar">
           ';
-      foreach (["wdlr", "wde", "wds"] as $i) {
-        if ($s[$i] == 1) {
-          include("s/" . $i . ".html");
-        }
-      };
-      echo "</div>
+            foreach (["wdlr", "wde", "wds"] as $i) {
+                if ($s[$i] == 1) {
+                    include("s/" . $i . ".html");
+                }
+            };
+            echo "</div>
           ";
-    }
-    ?>
+        }
+        ?>
     </header>
     <main class="container-fluid" role="main">
         <div class="container">
-            <div class="row py-2" id="article">
+            <div class="m-3" id="additional-content"></div>
+            <div class="row py-2 system" id="article">
                 <div class="col py-1 px-3">
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <p>!<span class="sd"><span class="wd" wdlr="100" wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                    ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
                                     dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd">Lorem ipsum dolor sit
-                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                                     nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
                                     sit amet.</p>
 
                                 <p><span class="sd">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
-                    dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
+                                        dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
                                     ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
                                 <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel
                                     illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
 
-                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50
-                                        wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                                    et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                        et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
 
                                 <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p>
 
@@ -87,23 +87,22 @@
                                     sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur</p>
 
                                 <p><span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
                                     dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd">Lorem ipsum dolor sit
-                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                                     nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
                                     sit amet.</p>
 
                                 <p><span class="sd">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
-                    dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
+                                        dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
                                     ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
                                 <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel
                                     illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
 
-                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50
-                                        wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                                    et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                        et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
 
                                 <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p>
 
@@ -114,23 +113,22 @@
                             </div>
                             <div class="carousel-item">
                                 <p><span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
                                     dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd">Lorem ipsum dolor sit
-                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                                     nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
                                     sit amet.</p>
 
                                 <p><span class="sd">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
-                    dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
+                                        dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
                                     ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
                                 <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel
                                     illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
 
-                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50
-                                        wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                                    et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                        et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
 
                                 <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p>
 
@@ -140,23 +138,22 @@
                                     sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur</p>
 
                                 <p><span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
                                     dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd">Lorem ipsum dolor sit
-                    amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wdlr=34 wde=60 wds="et">accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                                     nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
                                     sit amet.</p>
 
                                 <p><span class="sd">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
-                    dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
+                                        dolore eu feugiat nulla facilisis at vero <span class="wd" wdlr=20 wde=14 wds="quos">eros</span> et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</span> Lorem
                                     ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
 
                                 <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel
                                     illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
 
-                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50
-                                        wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-                                    et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                                <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. <span class="sd"><span class="wd" wdlr=100 wde=25 wds="ipsum">Lorem</span> <span class="wd" wdlr=50 wde=70 wds="lorem">ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                        et ea rebum.</span> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
 
                                 <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p>
 
@@ -186,8 +183,8 @@
     <script type="text/javascript">
         s = {
             <?php foreach ($s as $k => $v) {
-        echo $k . ": " . json_encode($v) . ",";
-      }; ?>};
+                echo $k . ": " . json_encode($v) . ",";
+            }; ?>};
     </script>
     <?php if ($s["wdlr"] || $s["wde"] || $s["wds"]) echo '<script src="js/wd.js"></script>' ?>
     <script src="js/app.js"></script>

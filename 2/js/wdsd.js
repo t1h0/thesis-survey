@@ -1,11 +1,17 @@
 wd = true;
 sd = true;
 
+function unsurroundWords() {
+    $(".wd").not(".wd-active").each(function(e) {
+        $(e).html($(e).text);
+    })
+}
+
 function detectWords(text, clickable = 1) {
     function surroundWords(word) {
         return "<span class='wd' clickable=" + clickable + ">" + word + "</span>";
     };
-    return text.replace(/\w+/g, surroundWords);
+    return text.replace(/[\w|-]+/g, surroundWords);
 }
 
 function detectSentences(text) {
@@ -26,7 +32,7 @@ $(document).ready(function() {
                 $(this).html(detectSentences($(this).text())); // only surround sentences
             }
         });
-        $(".sd").dblclick(function() { // on rightclick on sentence
+        $(".sd").dblclick(function() { // on doubleclick on sentence
             $(this).toggleClass("sd-active");
             if (wd) { // word detection active?
                 $(this).find("span").each(function() {
@@ -41,7 +47,9 @@ $(document).ready(function() {
     }
     if (wd) { // word detection active?
         $(".wd").click(function() {
-            if ($(this).attr("clickable") == 1) $(this).toggleClass("wd-active"); // activate word if allowed
+            if ($(this).attr("clickable") == 1) { // activate word and if needed preceeding space if allowed
+                $(this).toggleClass("wd-active");
+            }
         });
     }
 });

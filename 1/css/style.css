@@ -10,6 +10,10 @@ body {
     user-select: none;
 }
 
+.scrollBlock {
+    overflow: hidden;
+}
+
 
 /* UI */
 
@@ -60,7 +64,7 @@ main {
     padding-top: 0.5rem;
     padding-bottom: var(--app-space-y);
     max-height: calc(25vh - 2rem);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #app-instructions-row {
