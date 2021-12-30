@@ -86,7 +86,7 @@ class Procedure {
     go(toState, insert = false) {
         switch (typeof(toState)) {
             case "number":
-                this.procedure.get(this.keys[toState])();
+                this.procedure.get(this.keycond[toState])();
                 if (!insert) this.state = toState;
                 break;
             case "string":
@@ -100,7 +100,7 @@ class Procedure {
                 else {
                     this.state = 0;
                 }
-                this.procedure.get(this.keys[this.state])();
+                this.procedure.get(this.keycond[this.state])();
         }
     }
 
@@ -126,7 +126,7 @@ procedure = new Procedure(new Map([
         instr("You see the currently selected article in the app's main section.");
     }],
     ["tut1_sdwd", function() {
-        if (s["sd"] | s["wd"]) {
+        if (cond["sd"] | cond["wd"]) {
             instr("The app includes a helper system which provides support in detecting bias in news articles.")
             return;
         }
@@ -134,7 +134,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_sd", function() {
         unblock();
-        if (s["sd"]) { //sentence detection active?
+        if (cond["sd"]) { //sentence detection active?
             block($(".sd"));
             instr("Our system highlights sentences with a gray background, if it detects them as biased.");
             return;
@@ -143,7 +143,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wd", function() {
         unblock();
-        if (s["wd"]) { //word detection active?
+        if (cond["wd"]) { //word detection active?
             block($(".wd"), false, true);
             instr("Our system highlights phrases with a dotted underline, if it detects them as biased.");
             return;
@@ -174,7 +174,7 @@ procedure = new Procedure(new Map([
         $(".app-show-temp").remove();
         $("#articleId").text("A");
         unblock();
-        if (s["wdlr"] || s["wde"] || s["wds"]) {
+        if (cond["wdlr"] || cond["wde"] || cond["wds"]) {
             block($("header"), true);
             instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biaed or neutral the current article is written.");
             return;
@@ -195,7 +195,7 @@ procedure = new Procedure(new Map([
         control();
     }],
     ["tut1_wdlr", function() {
-        if (s["wdlr"]) {
+        if (cond["wdlr"]) {
             instr("The <span class='font-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use this phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).")
             $("#wd-component-lr").addClass("app-show-highlight-sb");
             return;
@@ -204,7 +204,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wde", function() {
         $("#wd-component-lr").removeClass("app-show-highlight-sb");
-        if (s["wde"]) {
+        if (cond["wde"]) {
             instr("The <span class='font-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use this phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.")
             $("#wd-component-e").addClass("app-show-highlight-sb");
             return;
@@ -213,7 +213,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wds", function() {
         $("#wd-component-e").removeClass("app-show-highlight-sb");
-        if (s["wds"]) {
+        if (cond["wds"]) {
             instr("The <span class='font-italic'>Synonyms Box</span> shows you an alternative phrase with the same meaning as the selected phrase but neutral in its nature.")
             $("#wd-component-s").addClass("app-show-highlight-sb");
             return;

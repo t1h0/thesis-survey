@@ -1,3 +1,6 @@
+<?php
+include("surveyStart.php");
+?>
 <!doctype html>
 <html>
 
@@ -7,10 +10,8 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <?php
-    $s = [];
     foreach (["wdlr", "wde", "wds", "sd", "wd"] as $i) { // validating get variables
-        $s[$i] = isset($_GET[$i]) && $_GET[$i] == 1; // tranforming into local array
-        if ($s[$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
+        if ($_SESSION["cond"][$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
     '; // including respective css-files
     }
     $s["wd"] = ($s["wdlr"] || $s["wde"] || $s["wds"] || $s["wd"]); // wd is always true if one of these are true
@@ -181,12 +182,12 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/ui.js"></script>
     <script type="text/javascript">
-        s = {
-            <?php foreach ($s as $k => $v) {
+        cond = {
+            <?php foreach ($_SESSION["cond"] as $k => $v) {
                 echo $k . ": " . json_encode($v) . ",";
             }; ?>};
     </script>
-    <?php if ($s["wdlr"] || $s["wde"] || $s["wds"]) echo '<script src="js/wd.js"></script>' ?>
+    <?php if ($_SESSION["cond"]["wd"]) echo '<script src="js/wd.js"></script>' ?>
     <script src="js/app.js"></script>
 </body>
 
