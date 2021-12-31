@@ -42,7 +42,7 @@ function block(keep, allowInteract = false, keepHighlight = false, allowScroll =
 function addContent(content) {
     if (content != null) {
         $(".system").addClass("d-none");
-        $("#additional-content").removeClass("d-none");
+        $("").removeClass("d-none");
         $("#additional-content").html(content);
     } else {
         $(".system").removeClass("d-none");
@@ -58,7 +58,9 @@ function instr(instruction) {
 
 function control(text = "Continue") {
     if (!$("#app-button").length) {
-        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(() => { procedure.go() }));
+        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(function() {
+            if (!$(this).hasClass("disabled")) procedure.go()
+        }));
     } else if (!text) {
         $("#app-button").remove();
     } else {
@@ -108,15 +110,25 @@ class Procedure {
 }
 
 procedure = new Procedure(new Map([
-    ["start", function() {
+    ["survey_start", function() {
         instr();
         addContent("<p>Welcome!</p><p>Welcome to this study, which takes most people about 5-15 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 1.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 5-15 minutes without interruptions.</p>");
     }],
     ["consent", function() {
+        control(null);
+        control();
+        $("#app-button").addClass("disabled");
         addContent("<p><strong>Study Information</strong></p><p class='text-left'>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p class='text-left'>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p class='text-left'>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p class='text-left'>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p class='text-left'>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p class='text-left'>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p>");
         instr("<p class='font-weight-bold'>Declaration of Consent</p><form id='consent_declaration'><input type='checkbox' class='form-check-input' id='consent' name='consent_confirmation' value='confirm'> <label for='consent'>I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.</label></form>");
+        $("#consent").change(function() {
+            $("#app-button").toggleClass("disabled");
+        })
     }],
     ["tut1_start", function() {
+        tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
+        $(".carousel-item").each(function(index) {
+            $(this).load(tut1_articles[index]);
+        });
         addContent(null);
         block();
         instr("You are now going to learn about the functionality of this app before you will actually use it.");
@@ -243,7 +255,7 @@ procedure = new Procedure(new Map([
         $(window).off("scroll.temp");
     }],
     ["tut1_end", function() {
-        instr("<p>Please take some time now to make yourself familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
+        instr("<p>Please take some time now to get familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
         control("Start");
     }],
     ["task1_start", function() {
@@ -258,10 +270,13 @@ procedure = new Procedure(new Map([
     ["task1_activateSubmit", function() {
         $(".article-navigator").off("click.temp");
     }],
+    ["survey_end", function() {
+        return;
+    }]
 ]));
 
 $(document).ready(function() {
-    procedure.go();
+    procedure.go(step_start);
 });
 
 // TO DO: Separate wd_lr/e and sd_s

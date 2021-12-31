@@ -11,7 +11,7 @@ include("surveyStart.php");
     <link rel="stylesheet" href="css/style.css">
     <?php
     // including respective css-files
-    foreach (["wd","sd","wdsd"] as $i) {
+    foreach (["wd","sd","wdsd","sd_s"] as $i) {
         if ($_SESSION["cond"][$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
     ';
     };
@@ -52,107 +52,16 @@ include("surveyStart.php");
         }
         ?>
     </header>
-    <main class="container-fluid" role="main">
-        <div class="container">
-            <div class="m-3" id="additional-content"></div>
+    <main role="main">
+        <div class="container position-relative h-100">
+        <div class="mt-5" id="additional-content"></div>
             <div class="row py-2 system" id="article">
                 <div class="col py-1 px-3">
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <p>!<span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
                             </div>
                             <div class="carousel-item">
-                            <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
-                                    <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-                                        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                                    dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.">Lorem ipsum dolor sit
-                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et <span class="wd" wd_lr=34 wd_e=60>accusam</span> et justo duo dolores et ea rebum.</span> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-                                    nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
-                                    sit amet.</p>
                             </div>
                         </div>
                     </div>
@@ -173,12 +82,12 @@ include("surveyStart.php");
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/ui.js"></script>
     <script type="text/javascript">
-        cond = {
-            <?php foreach ($_SESSION["cond"] as $k => $v) {
-                echo $k . ": " . json_encode($v) . ",";
-            }; ?>};
+        cond = <?php echo json_encode($_SESSION["cond"]);?>;
+        articles = <?php echo json_encode($_SESSION["articles"]);?>;
+        step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
-    <?php if ($_SESSION["cond"]["wdsd"]) echo '<script src="js/wdsd.js"></script>' ?>
+    <?php if ($_SESSION["cond"]["wd_lr"] | $_SESSION["cond"]["wd_e"]) echo '<script src="js/wd.js"></script>';
+     if ($_SESSION["cond"]["sd_s"]) echo '<script src="js/sd_s.js"></script>';?>
     <script src="js/app.js"></script>
 </body>
 
