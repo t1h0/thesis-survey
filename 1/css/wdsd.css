@@ -1,3 +1,8 @@
+.wd,
+.sd {
+    cursor: pointer;
+}
+
 .wdsd-component {
     border-color: steelblue !important;
 }

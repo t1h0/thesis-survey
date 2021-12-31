@@ -8,10 +8,10 @@ $_SESSION["sessionid"] = $_GET["sessionid"];
 if (isset($_GET["test"])) {
     $_SESSION["cond"] = [
         "wd_lr" => true,
-        "wd_e" => true,
+        "wd_e" => false,
         "wd" => true,
         "sd" => true,
-        "sd_s" => true,
+        "sd_s" => false,
         "wdsd" => true,
     ];
 } else {
@@ -32,8 +32,8 @@ if (isset($_GET["test"])) {
             "wd_lr" => ($cond + 2) % 5 == 0 || $cond % 5 == 0,
             "wd_e" => ($cond + 1) % 5 == 0 || $cond % 5 == 0,
             "wd" => ($cond + 4) % 5 != 0,
-            "sd" => ($cond >= 1 && $cond <= 5) || ($cond >= 11 && $cond <= 15),
-            "sd_s" => $cond >= 1 && $cond <= 10,
+            "sd" => $cond >= 6 && $cond <= 15,
+            "sd_s" => $cond >= 11 && $cond <= 15,
         ];
         $_SESSION["cond"]["wdsd"] = $_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"];
     } catch (PDOException $e) {

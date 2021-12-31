@@ -60,7 +60,7 @@ include("surveyStart.php");
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <p><span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                                <p>!<span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                                     nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."><span class="wd" wd_lr="100" wd_e=25 >Lorem</span> <span class="wd" wd_lr=50 wd_e=70>ipsum</span> dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
                                         ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</span> Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
                                     dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. <span class="sd" sd_s="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam

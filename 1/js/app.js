@@ -8,7 +8,19 @@ function logSql(data_raw, run = 1) {
     };
 }
 
-function block(keep, allowInteract = false, keepHighlight = false, allowScroll = false) {
+
+function unblock() {
+    // Undo older blocking
+    if ($(".blocker").length) {
+        $(".blocker").remove();
+    }
+    $(".scrollBlock").removeClass("scrollBlock");
+    $(".app-show").removeClass("app-show app-show-highlight");
+
+}
+
+function block(keep, allowInteract = false, keepHighlight = false, allowScroll = false, unblockFirst = true) {
+    if (unblockFirst) unblock();
     if (!$("#grayBlocker").length) {
         $("body").append('<div id="grayBlocker" class="blocker"></div>');
         $("#grayBlocker").css("opacity", "0.3");
@@ -27,18 +39,8 @@ function block(keep, allowInteract = false, keepHighlight = false, allowScroll =
     }
 }
 
-function unblock() {
-    // Undo older blocking
-    if ($(".blocker").length) {
-        $(".blocker").remove();
-    }
-    $(".scrollBlock").removeClass("scrollBlock");
-    $(".app-show").removeClass("app-show app-show-highlight");
-
-}
-
 function addContent(content) {
-    if (content) {
+    if (content != null) {
         $(".system").addClass("d-none");
         $("#additional-content").removeClass("d-none");
         $("#additional-content").html(content);
@@ -64,43 +66,42 @@ function control(text = "Continue") {
     }
 }
 
-function go(toState) {
-    if (typeof(toState) == "string") {
-        state = toCase;
-    } else if (typeof(window.nextState) == "undefined") {
-        state = "start";
-    } else {
-        state = window.nextState;
-    }
-    logSql({ "state": state });
-}
+// function go(toState) {
+//     if (typeof(toState) == "string") {
+//         state = toCase;
+//     } else if (typeof(window.nextState) == "undefined") {
+//         state = "start";
+//     } else {
+//         state = window.nextState;
+//     }
+//     logSql({ "state": state });
+// }
 
 // Procedure
 
 class Procedure {
-    constructor(procedure = new Map()) {
-        this.procedure = procedure;
-        this.keys = [...this.procedure.keys()];
+    constructor(proc = new Map()) {
+        this.proc = proc;
+        this.keys = [...this.proc.keys()];
     }
 
     go(toState, insert = false) {
+        control();
         switch (typeof(toState)) {
             case "number":
-                this.procedure.get(this.keys[toState])();
                 if (!insert) this.state = toState;
+                this.proc.get(this.keys[toState])();
                 break;
             case "string":
-                this.procedure.get(toState)();
-                this.state = this.keys.find((key) => {
-                    return key == toState;
-                })
+                this.state = this.keys.indexOf(toState);
+                this.proc.get(toState)();
                 break;
             default:
                 if (typeof(this.state) !== "undefined") this.state++;
                 else {
                     this.state = 0;
                 }
-                this.procedure.get(this.keys[this.state])();
+                this.proc.get(this.keys[this.state])();
         }
     }
 
@@ -108,7 +109,6 @@ class Procedure {
 
 procedure = new Procedure(new Map([
     ["start", function() {
-        control();
         instr();
         addContent("<p>Welcome!</p><p>Welcome to this study, which takes most people about 5-15 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 1.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 5-15 minutes without interruptions.</p>");
     }],
@@ -117,11 +117,11 @@ procedure = new Procedure(new Map([
         instr("<p class='font-weight-bold'>Declaration of Consent</p><form id='consent_declaration'><input type='checkbox' class='form-check-input' id='consent' name='consent_confirmation' value='confirm'> <label for='consent'>I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.</label></form>");
     }],
     ["tut1_start", function() {
+        addContent(null);
         block();
         instr("You are now going to learn about the functionality of this app before you will actually use it.");
     }],
     ["tut1_main", function() {
-        unblock();
         block($("main"));
         instr("You see the currently selected article in the app's main section.");
     }],
@@ -133,7 +133,6 @@ procedure = new Procedure(new Map([
         procedure.go();
     }],
     ["tut1_sd", function() {
-        unblock();
         if (cond["sd"]) { //sentence detection active?
             block($(".sd"));
             instr("Our system highlights sentences with a gray background, if it detects them as biased.");
@@ -142,7 +141,6 @@ procedure = new Procedure(new Map([
         procedure.go();
     }],
     ["tut1_wd", function() {
-        unblock();
         if (cond["wd"]) { //word detection active?
             block($(".wd"), false, true);
             instr("Our system highlights phrases with a dotted underline, if it detects them as biased.");
@@ -154,95 +152,95 @@ procedure = new Procedure(new Map([
         $("body").prepend(
             $("#reader-control").clone(true).addClass("app-show-temp")
         );
-        unblock();
         block($(".app-show-temp"));
         instr("On top you see the app's control bar.");
     }],
     ["tut1_articleSwitch", function() {
         control(null);
-        block($("main")); // transparentBlock still active from tut1_controlBar!
-        $(".app-show-temp").attr("style", "z-index: 4500 !important"); // put temp on top of all blocks
-        $(".article-navigator").on("click.temp", go);
+        block($("main"), unblockFirst = false); // keeping (transparent) Block still active from tut1_controlBar!
+        $(".app-show-temp").attr("style", "z-index: 4500 !important"); // put temp on top of all blocks to allow interaction
+        $(".article-navigator").on("click.temp", () => { procedure.go() });
         instr("<p>To switch between two articles, click on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
     }],
     ["tut1_articleSwitch_success", function() {
         $(".article-navigator").off("click.temp");
         instr("Very good!");
-        control();
     }],
     ["tut1_analysisBar", function() {
         $(".app-show-temp").remove();
-        $("#articleId").text("A");
-        unblock();
-        if (cond["wdlr"] || cond["wde"] || cond["wds"]) {
-            block($("header"), true);
-            instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biaed or neutral the current article is written.");
-            return;
+        if (cond["wdsd"]) {
+            block($("header"), allowInteract = true);
+            instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biased or neutral the current article is written.");
+        } else {
+            procedure.go("tut1_scroll");
         }
-        go("tut1_scroll");
+    }],
+    ["tut1_clickOnSentence", function() {
+        if (cond["sd_s"]) {
+            unblock();
+            $(".sd").on("click.temp", () => { procedure.go() });
+            instr("<p>If you click on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
+            control(null);
+        } else procedure.go("tut1_clickOnPhrase");
+    }],
+    ["tut1_clickOnSentence_success", function() {
+        $(".sd").off("click.temp");
+        instr("Very good!");
+    }],
+    ["tut1_sd_s", function() {
+        instr("The <span class='font-italic'>Synonyms Box</span> shows you an alternative sentence with the same meaning as the selected sentence but neutral in its nature.")
+        $("#sd_s-component").addClass("app-show-highlight-sb");
     }],
     ["tut1_clickOnPhrase", function() {
-        unblock();
-        block($("header, main"), true);
-        $(".wd").on("click.temp", go);
-        instr("<p>If you click on a biased phrase (highlighted with a dotted underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
-        control(null);
+        $("#sd_s-component").removeClass("app-show-highlight-sb");
+        if (cond["wd_lr"] | cond["wd_e"]) {
+            unblock();
+            $(".wd").on("click.temp", () => { procedure.go() });
+            instr("<p>If you click on a biased phrase (highlighted with a dotted underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
+            control(null);
+        } else procedure.go("tut1_clickAnywhere");
     }],
     ["tut1_clickOnPhrase_success", function() {
-        block($("header, main"));
         $(".wd").off("click.temp");
         instr("Very good!");
-        control();
     }],
-    ["tut1_wdlr", function() {
-        if (cond["wdlr"]) {
-            instr("The <span class='font-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use this phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).")
-            $("#wd-component-lr").addClass("app-show-highlight-sb");
-            return;
-        }
-        procedure.go();
+    ["tut1_wd_lr", function() {
+        if (cond["wd_lr"]) {
+            instr("The <span class='font-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).")
+            $("#wd_lr-component").addClass("app-show-highlight-sb");
+        } else procedure.go();
     }],
-    ["tut1_wde", function() {
-        $("#wd-component-lr").removeClass("app-show-highlight-sb");
-        if (cond["wde"]) {
-            instr("The <span class='font-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use this phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.")
-            $("#wd-component-e").addClass("app-show-highlight-sb");
-            return;
-        }
-        procedure.go();
-    }],
-    ["tut1_wds", function() {
-        $("#wd-component-e").removeClass("app-show-highlight-sb");
-        if (cond["wds"]) {
-            instr("The <span class='font-italic'>Synonyms Box</span> shows you an alternative phrase with the same meaning as the selected phrase but neutral in its nature.")
-            $("#wd-component-s").addClass("app-show-highlight-sb");
-            return;
-        }
-        procedure.go();
+    ["tut1_wd_e", function() {
+        $("#wd_lr-component").removeClass("app-show-highlight-sb");
+        if (cond["wd_e"]) {
+            instr("The <span class='font-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.")
+            $("#wd_e-component").addClass("app-show-highlight-sb");
+        } else procedure.go();
     }],
     ["tut1_clickAnywhere", function() {
-        $("#wd-component-s").removeClass("app-show-highlight-sb");
+        $("#wd_e-component").removeClass("app-show-highlight-sb");
         unblock();
-        block($("header, main"), true);
-        $(".article-navigator, main").on("click.temp", go);
-        instr("<p>Click anywhere on the article besides a biased phrase or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
+        $(".article-navigator, main").on("click.temp", () => { procedure.go() });
+        senphrase = [];
+        if (cond["sd_s"]) senphrase.push("sentence");
+        if (cond["wd_lr"] | cond["wd_e"]) senphrase.push("phrase");
+        senphrase = senphrase.join(" / ");
+        instr("<p>Click anywhere on the article besides a biased " + senphrase + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
         control(null);
     }],
     ["tut1_clickAnywhere_success", function() {
         $(".article-navigator, main").off("click.temp");
         instr("Very good!");
-        control();
     }],
     ["tut1_scroll", function() {
         unblock();
         control(null);
         instr("<p>Finally, to continue reading and see the full article, scroll up and down on your device.</p><p>Try it!</p>");
-        $(window).on("scroll.temp", go);
+        $(window).on("scroll.temp", () => { procedure.go() });
     }],
     ["tut1_scroll_success", function() {
         instr("Very good!");
         $(window).off("scroll.temp");
-        control();
     }],
     ["tut1_end", function() {
         instr("<p>Please take some time now to make yourself familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
@@ -251,19 +249,19 @@ procedure = new Procedure(new Map([
     ["task1_start", function() {
         // TO DO: load articles
         instr("<p>Article A and article B are now two articles, that reporters of the your newspaper wrote about the <span class='font-italic'>Kyle Rittenhouse</span> trial.");
-        control();
     }],
     ["task1_decide", function() {
         instr("Please read both articles and then choose, which article uses the most neutral language:</p><form id='article_choice'><input type='radio' id='a' name='article_choice' value='A'> <label for='a'>Article A</label><br><input type='radio' id='b' name='article_choice' value='B'> <label for='b'>Article B</label></form>");
         control(null);
-        $(".article-navigator").on("click.temp", go);
+        $(".article-navigator").on("click.temp", () => { procedure.go() });
     }],
     ["task1_activateSubmit", function() {
-        control();
         $(".article-navigator").off("click.temp");
     }],
 ]));
 
 $(document).ready(function() {
-    procedure.go("tut1_end");
+    procedure.go();
 });
+
+// TO DO: Separate wd_lr/e and sd_s
