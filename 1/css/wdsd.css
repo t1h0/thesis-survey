@@ -1,0 +1,38 @@
+.wdsd-component {
+    border-color: steelblue !important;
+}
+
+#wd_e-component,
+#wd_lr-component {
+    width: 360px !important;
+}
+
+.wd-bar {
+    background-color: lightsteelblue !important;
+    height: 1em;
+}
+
+.wd-bar_name {
+    z-index: 0;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+}
+
+.wd-indicator {
+    width: 0;
+    height: 0;
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+    border-bottom: 0.7em solid var(--dark-gray);
+    margin-top: 0.7em;
+    margin-left: calc(50% - 0.5em);
+    transition: margin-left 1s;
+    z-index: 1;
+}
+
+#sd_s-component {
+    min-width: 360px !important;
+}

@@ -86,7 +86,7 @@ class Procedure {
     go(toState, insert = false) {
         switch (typeof(toState)) {
             case "number":
-                this.procedure.get(this.keycond[toState])();
+                this.procedure.get(this.keys[toState])();
                 if (!insert) this.state = toState;
                 break;
             case "string":
@@ -100,7 +100,7 @@ class Procedure {
                 else {
                     this.state = 0;
                 }
-                this.procedure.get(this.keycond[this.state])();
+                this.procedure.get(this.keys[this.state])();
         }
     }
 
@@ -265,5 +265,5 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    procedure.go();
+    procedure.go("tut1_end");
 });
