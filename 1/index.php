@@ -20,7 +20,8 @@ include("surveyStart.php");
 </head>
 
 <body>
-    <header class="container-fluid text-center sticky-top system ui" id="ui">
+<img id="loading-icon" src="img/loading.svg">
+    <header class="container-fluid text-center sticky-top system ui d-none" id="ui">
         <div class="row justify-content-between ui" id="reader-control">
             <div class="col-3 p-0">
                 <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button disabled" href="#article-container" role="button" data-slide="prev">
@@ -54,8 +55,8 @@ include("surveyStart.php");
     </header>
     <main role="main">
         <div class="container position-relative h-100">
-        <div class="mt-5" id="additional-content"></div>
-            <div class="row py-2 system" id="article">
+        <div class="row mt-5" id="additional-content"></div>
+            <div class="row py-2 system d-none" id="article">
                 <div class="col py-1 px-3">
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
                         <div class="carousel-inner">
@@ -74,7 +75,7 @@ include("surveyStart.php");
             <div class="col align-self-center" id="app-instructions"></div>
         </div>
         <div class="row mt-auto pb-3 pt-1">
-            <div class="col d-flex align-items-center justify-content-center" id="app-controls">
+            <div class="col d-flex align-items-center justify-content-center d-relative" id="app-controls">
             </div>
         </div>
     </footer>

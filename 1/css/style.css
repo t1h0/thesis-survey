@@ -10,6 +10,15 @@ body {
     user-select: none;
 }
 
+#loading-icon {
+    position: fixed;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+}
+
 .scrollBlock {
     overflow: hidden;
 }

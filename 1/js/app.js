@@ -3,70 +3,70 @@ function logSql(data_raw, run = 1) {
         $.post("sqlLog.php", data_raw, (response) => {
             if (response == 0) {
                 logSql(data_raw, ++run);
-            }
+            };
         });
     };
-}
+};
 
 
 function unblock() {
     // Undo older blocking
     if ($(".blocker").length) {
         $(".blocker").remove();
-    }
+    };
     $(".scrollBlock").removeClass("scrollBlock");
     $(".app-show").removeClass("app-show app-show-highlight");
 
-}
+};
 
 function block(keep, allowInteract = false, keepHighlight = false, allowScroll = false, unblockFirst = true) {
     if (unblockFirst) unblock();
     if (!$("#grayBlocker").length) {
         $("body").append('<div id="grayBlocker" class="blocker"></div>');
         $("#grayBlocker").css("opacity", "0.3");
-    }
+    };
     if (!allowScroll) {
         $("body").addClass("scrollBlock");
-    }
+    };
     if (keep) {
         if (!allowInteract) {
             if (!$("#transparentBlocker").length) {
                 $("body").append('<div id="transparentBlocker" class="blocker"></div>');
-            }
-        }
+            };
+        };
         keep.addClass("app-show");
         if (keepHighlight) keep.addClass("app-show-highlight");
-    }
-}
+    };
+};
 
-function addContent(content) {
-    if (content != null) {
+function adContent(content) {
+    if (content) {
         $(".system").addClass("d-none");
-        $("").removeClass("d-none");
         $("#additional-content").html(content);
+        $("#additional-content").removeClass("d-none");
     } else {
         $(".system").removeClass("d-none");
         $("#additional-content").addClass("d-none");
-    }
-}
+    };
+};
 
 function instr(instruction) {
     $("#app-instructions").html(instruction);
     // Recalculating padding-bottom of article (main)
     $("main").css("padding-bottom", $("#app").outerHeight());
-}
+    $("#loading-icon").css("transformY", "calc(-50% - " + $("#app").outerHeight() + ")");
+};
 
-function control(text = "Continue") {
-    if (!$("#app-button").length) {
-        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(function() {
-            if (!$(this).hasClass("disabled")) procedure.go()
-        }));
-    } else if (!text) {
+function control(text = null, customHTML = null) {
+    if (!text) {
         $("#app-button").remove();
-    } else {
-        $("#app-button").text(text);
-    }
-}
+        $("#app-controls").html(customHTML);
+    } else if (!$("#app-button").length) {
+        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(function() {
+            procedure.go()
+        }));
+    } else $("#app-button").text(text);
+};
 
 // function go(toState) {
 //     if (typeof(toState) == "string") {
@@ -85,10 +85,10 @@ class Procedure {
     constructor(proc = new Map()) {
         this.proc = proc;
         this.keys = [...this.proc.keys()];
-    }
+    };
 
     go(toState, insert = false) {
-        control();
+        control("Continue");
         switch (typeof(toState)) {
             case "number":
                 if (!insert) this.state = toState;
@@ -102,34 +102,85 @@ class Procedure {
                 if (typeof(this.state) !== "undefined") this.state++;
                 else {
                     this.state = 0;
-                }
+                };
                 this.proc.get(this.keys[this.state])();
-        }
-    }
+        };
+    };
 
 }
 
 procedure = new Procedure(new Map([
     ["survey_start", function() {
         instr();
-        addContent("<p>Welcome!</p><p>Welcome to this study, which takes most people about 5-15 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 1.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 5-15 minutes without interruptions.</p>");
+        adContent("<div class='col'><h2>Welcome!</h2><p>Welcome to this study, which takes most people about 5-15 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 1.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 5-15 minutes without interruptions.</p></div>");
     }],
     ["consent", function() {
-        control(null);
-        control();
-        $("#app-button").addClass("disabled");
-        addContent("<p><strong>Study Information</strong></p><p class='text-left'>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p class='text-left'>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p class='text-left'>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p class='text-left'>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p class='text-left'>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p class='text-left'>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p>");
+        $("#app-button").prop("disabled", true);
+        adContent("<div class='col'><h2>Study Information</h2><p>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p></div>");
         instr("<p class='font-weight-bold'>Declaration of Consent</p><form id='consent_declaration'><input type='checkbox' class='form-check-input' id='consent' name='consent_confirmation' value='confirm'> <label for='consent'>I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.</label></form>");
         $("#consent").change(function() {
-            $("#app-button").toggleClass("disabled");
+            $("#app-button").prop("disabled", function(i, v) { return !v; });
         })
+    }],
+    ["demographics", function() {
+        adContent(`
+        <h2 class="col-12"><h2>Demographics</h3>
+        <form class="row g-4" id="demographics">
+            <div class="col-12">
+                <h4>What is your gender?</h4>
+                <select class="form-select form-select-lg mt-4" id="gender" required>
+                    <option selected disabled value="">Please select..</option>
+                    <option value=0>Female</option>
+                    <option value=1>Male</option>
+                    <option value=2>Other</option>
+                    <option value=3>I don't wish to respond</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <h4>What is your level of English proficiency?</h4>
+                <select class="form-select form-select-lg mt-4" id="english" required>
+                    <option selected disabled value="">Please select..</option>
+                    <option value=0>Native speaker</option>
+                    <option value=1>Non-native speaker</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <h4>What is your age?</h4>
+                <input class="col-12 form-control form-control-lg mt-4" type="number" step=1 id="age" placeholder="Please state your age.." required>
+            </div>
+            <div class="col-12">
+                <h4>What is the highest level of schooling you have completed?</h4>
+                <select class="form-select form-select-lg mt-4" id="school" required>
+                    <option selected disabled value="">Please select..</option>
+                    <option value=0>8th grade</option>
+                    <option value=1>Some high school</option>
+                    <option value=2>High school graduate</option>
+                    <option value=3>Vocational or technical school</option>
+                    <option value=4>Some college</option>
+                    <option value=5>Associate degree</option>
+                    <option value=6>Bachelor's degree</option>
+                    <option value=7>Graduate work</option>
+                </select>
+            </div>
+        </form>`);
+        control(undefined, `<input type="submit" form="demographics" class="button btn" value="Continue"/>`);
+        $("#demographics").submit(function() {
+            logSql({
+                "dem_gender": $("gender").val(),
+                "dem_eng": $("eng").val(),
+                "dem_age": $("age").val(),
+                "dem_school": $("school").val(),
+            });
+            return false;
+        });
+        instr("Please answer all the questions above.");
     }],
     ["tut1_start", function() {
         tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
         $(".carousel-item").each(function(index) {
             $(this).load(tut1_articles[index]);
         });
-        addContent(null);
+        adContent(null);
         block();
         instr("You are now going to learn about the functionality of this app before you will actually use it.");
     }],
@@ -138,7 +189,7 @@ procedure = new Procedure(new Map([
         instr("You see the currently selected article in the app's main section.");
     }],
     ["tut1_sdwd", function() {
-        if (cond["sd"] | cond["wd"]) {
+        if (cond["sd"] || cond["wd"]) {
             instr("The app includes a helper system which provides support in detecting bias in news articles.")
             return;
         }
@@ -168,7 +219,7 @@ procedure = new Procedure(new Map([
         instr("On top you see the app's control bar.");
     }],
     ["tut1_articleSwitch", function() {
-        control(null);
+        control();
         block($("main"), unblockFirst = false); // keeping (transparent) Block still active from tut1_controlBar!
         $(".app-show-temp").attr("style", "z-index: 4500 !important"); // put temp on top of all blocks to allow interaction
         $(".article-navigator").on("click.temp", () => { procedure.go() });
@@ -192,7 +243,7 @@ procedure = new Procedure(new Map([
             unblock();
             $(".sd").on("click.temp", () => { procedure.go() });
             instr("<p>If you click on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
-            control(null);
+            control();
         } else procedure.go("tut1_clickOnPhrase");
     }],
     ["tut1_clickOnSentence_success", function() {
@@ -205,11 +256,11 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_clickOnPhrase", function() {
         $("#sd_s-component").removeClass("app-show-highlight-sb");
-        if (cond["wd_lr"] | cond["wd_e"]) {
+        if (cond["wd_lr"] || cond["wd_e"]) {
             unblock();
             $(".wd").on("click.temp", () => { procedure.go() });
             instr("<p>If you click on a biased phrase (highlighted with a dotted underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
-            control(null);
+            control();
         } else procedure.go("tut1_clickAnywhere");
     }],
     ["tut1_clickOnPhrase_success", function() {
@@ -235,10 +286,10 @@ procedure = new Procedure(new Map([
         $(".article-navigator, main").on("click.temp", () => { procedure.go() });
         senphrase = [];
         if (cond["sd_s"]) senphrase.push("sentence");
-        if (cond["wd_lr"] | cond["wd_e"]) senphrase.push("phrase");
+        if (cond["wd_lr"] || cond["wd_e"]) senphrase.push("phrase");
         senphrase = senphrase.join(" / ");
         instr("<p>Click anywhere on the article besides a biased " + senphrase + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
-        control(null);
+        control();
     }],
     ["tut1_clickAnywhere_success", function() {
         $(".article-navigator, main").off("click.temp");
@@ -246,7 +297,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_scroll", function() {
         unblock();
-        control(null);
+        control();
         instr("<p>Finally, to continue reading and see the full article, scroll up and down on your device.</p><p>Try it!</p>");
         $(window).on("scroll.temp", () => { procedure.go() });
     }],
@@ -259,12 +310,14 @@ procedure = new Procedure(new Map([
         control("Start");
     }],
     ["task1_start", function() {
-        // TO DO: load articles
-        instr("<p>Article A and article B are now two articles, that reporters of the your newspaper wrote about the <span class='font-italic'>Kyle Rittenhouse</span> trial.");
+        $(".carousel-item").each(function(index) {
+            $(this).load(articles[index]);
+        });
+        instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='font-italic'>Kyle Rittenhouse</span> trial.");
     }],
     ["task1_decide", function() {
         instr("Please read both articles and then choose, which article uses the most neutral language:</p><form id='article_choice'><input type='radio' id='a' name='article_choice' value='A'> <label for='a'>Article A</label><br><input type='radio' id='b' name='article_choice' value='B'> <label for='b'>Article B</label></form>");
-        control(null);
+        control();
         $(".article-navigator").on("click.temp", () => { procedure.go() });
     }],
     ["task1_activateSubmit", function() {
@@ -276,7 +329,5 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    procedure.go(step_start);
+    procedure.go(steps_tart);
 });
-
-// TO DO: Separate wd_lr/e and sd_s
