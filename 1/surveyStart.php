@@ -4,7 +4,7 @@ function getArticles($article = null){
     $dirs = ["left", "center", "right", "left alt", "center alt", "right alt"];
     $files = ["low", "middle", "high"];
 
-    if($article) return "articles/".(string) array_search($article[0],$dirs)."/".(string) array_search($article[1],$files); // return file path if pol and bias provided
+    if($article) return "articles/".(string) array_search($article[0],$dirs)."/".(string) array_search($article[1],$files).".html"; // return file path if pol and bias provided
 
     // choosing articles
     // define the folder (therefore political stance) for each article (0+3 left,1+4 center,2+5 right)
@@ -45,7 +45,8 @@ if (isset($_GET["test"])) {
     list(,,$Apath,,,$Bpath) = getArticles();
     $_SESSION["articles"] = [$Apath, $Bpath];
     $_SESSION["step"] = 0;
-} else {
+}
+else {
 
     try {
         $conn = new PDO("mysql:host=$servername;dbname=mb", $username, $password, array(PDO::ATTR_PERSISTENT => true));
@@ -53,7 +54,7 @@ if (isset($_GET["test"])) {
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Check if subject already in database
-        $sql->prepare("SELECT step from Results where pid = ?");
+        $sql = $conn->prepare("SELECT * from Results where pid = ?");
         $sql->execute(array($_SESSION["pid"]));
         if ($sql->rowCount() > 0) {
             $result = $sql->fetch();
@@ -74,7 +75,7 @@ if (isset($_GET["test"])) {
             $sql = $conn->prepare("SELECT * FROM Manager");
             $sql->execute();
             $cond = $sql->fetch()["latest_cond"];
-            $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,articleA_pol,articleA_bias,articleB_pol,articleB_bias,step) VALUES (?,?,?,$cond,?,?,?,?)");
+            $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,articleA_pol,articleA_bias,articleB_pol,articleB_bias,step) VALUES (?,?,?,$cond,?,?,?,?,?)");
             $sql->execute(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"], $Apol, $Abias, $Bpol, $Bbias, 0));
             $conn->commit();
             $_SESSION["step"] = 0;
@@ -88,6 +89,7 @@ if (isset($_GET["test"])) {
         ];
         $_SESSION["cond"]["wdsd"] = $_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"];
     } catch (PDOException $e) {
-        echo "Error. Please try again.";
+        echo "Error: $e";
     }
 }
+// TODO: Change "survey_end" check to either INT or change databse and step logging

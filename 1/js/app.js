@@ -1,6 +1,63 @@
+// sd_s
+
+function resetSentences() {
+    // deactivate sentence
+    $(".sd-active").removeClass("sd-active");
+    $("#sd_s").text("···");
+}
+
+function prepareSD_S() {
+    $(".article-navigator").click(resetSentences);
+    $(".sd").click(function(e) { // assigning click function to detected words
+        e.stopPropagation(); // to prevent immediate automatic click on main
+
+        $(".sd-active").removeClass("sd-active");
+
+        $(this).addClass("sd-active"); // activating clicked sentence (this)
+        $("#sd_s").text($(this).attr("sd_s"));
+    });
+    $("main").click(resetSentences);
+};
+
+// wd_lr + wd_e
+
+function resetWords() {
+    // deactivate word
+    $(".wd-active").removeClass("wd-active");
+    // reset sliders
+    ["wd_lr", "wd_e"].forEach(function(i) {
+        if (cond[i]) { // cond contains the php variables and is provided by index.php!
+            $("#" + i).css("margin-left", "calc(50% - 0.5em");
+        }
+    });
+}
+
+function prepareWD_LRE() {
+    $(".article-navigator").click(resetWords);
+    $(".wd").click(function(e) { // assigning click function to detected words
+        if (!cond.sd_s) {
+            e.stopPropagation(); // to prevent immediate automatic click on main
+        }
+
+        //deactivating potential previous active word or sentence
+        $(".wd-active").removeClass("wd-active");
+
+        $(this).addClass("wd-active"); // activating clicked word (this)
+        ["wd_lr", "wd_e"].forEach((i) => {
+            if (cond[i]) {
+                $("#" + i).css("margin-left", "calc(" + $(".wd-active").attr(i) + "% - 0.5em"); //setting sliders to respective attribute values
+            }
+        });
+    });
+    $("main").click(resetWords);
+};
+
+// General
+
 function logSql(data_raw, run = 1) {
     if (run <= 3) {
         $.post("sqlLog.php", data_raw, (response) => {
+            console.log(response);
             if (response == 0) {
                 logSql(data_raw, ++run);
             };
@@ -9,34 +66,28 @@ function logSql(data_raw, run = 1) {
 };
 
 
-function unblock() {
-    // Undo older blocking
-    if ($(".blocker").length) {
-        $(".blocker").remove();
-    };
-    $(".scrollBlock").removeClass("scrollBlock");
-    $(".app-show").removeClass("app-show app-show-highlight");
+function unblock(target, removeHighlight = true) {
+    if (!target) target = $(".scrollBlock, .grayBlock, .actionBlock");
+    target.add(target.find("*")).removeClass("scrollBlock grayBlock actionBlock");
+    if (removeHighlight) $(".app-show-highlight").removeClass("app-show-highlight");
 
 };
 
-function block(keep, allowInteract = false, keepHighlight = false, allowScroll = false, unblockFirst = true) {
+function block(except, allowInteract = false, excHighlight = false, allowScroll = false, unblockFirst = true) {
     if (unblockFirst) unblock();
-    if (!$("#grayBlocker").length) {
-        $("body").append('<div id="grayBlocker" class="blocker"></div>');
-        $("#grayBlocker").css("opacity", "0.3");
-    };
     if (!allowScroll) {
         $("body").addClass("scrollBlock");
     };
-    if (keep) {
-        if (!allowInteract) {
-            if (!$("#transparentBlocker").length) {
-                $("body").append('<div id="transparentBlocker" class="blocker"></div>');
-            };
-        };
-        keep.addClass("app-show");
-        if (keepHighlight) keep.addClass("app-show-highlight");
-    };
+    keep = $("#app, #loading-icon");
+    if (except) {
+        keep = keep.add(except);
+        if (!allowInteract) except.addClass("actionBlock");
+        if (excHighlight) except.addClass("app-show-highlight-sb");
+    }
+    keepExt = $("body *").has(keep).add(keep.find("*")).add(keep);
+    dontKeep = $("body *").not(keepExt);
+    topLevelDontKeep = dontKeep.not(dontKeep.children()).not("script");
+    topLevelDontKeep.addClass("grayBlock actionBlock");
 };
 
 function adContent(content) {
@@ -54,18 +105,18 @@ function instr(instruction) {
     $("#app-instructions").html(instruction);
     // Recalculating padding-bottom of article (main)
     $("main").css("padding-bottom", $("#app").outerHeight());
-    $("#loading-icon").css("transformY", "calc(-50% - " + $("#app").outerHeight() + ")");
+    $("#loading-icon").css("transform", "translateX(-50%) translateY(calc(-50% - " + $("#app").outerHeight() + "))");
 };
 
 function control(text = null, customHTML = null) {
+    $("#app-controls").empty();
     if (!text) {
-        $("#app-button").remove();
         $("#app-controls").html(customHTML);
-    } else if (!$("#app-button").length) {
+    } else {
         $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(function() {
             procedure.go()
         }));
-    } else $("#app-button").text(text);
+    };
 };
 
 // function go(toState) {
@@ -117,15 +168,29 @@ procedure = new Procedure(new Map([
     ["consent", function() {
         $("#app-button").prop("disabled", true);
         adContent("<div class='col'><h2>Study Information</h2><p>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p></div>");
-        instr("<p class='font-weight-bold'>Declaration of Consent</p><form id='consent_declaration'><input type='checkbox' class='form-check-input' id='consent' name='consent_confirmation' value='confirm'> <label for='consent'>I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.</label></form>");
-        $("#consent").change(function() {
-            $("#app-button").prop("disabled", function(i, v) { return !v; });
-        })
+        instr(`
+        <p class='fw-bolder'>Declaration of Consent</p>
+        <form id='consent_declaration' action="">
+            <div class="form-check">
+            <input class="form-check-input form-check-lg" type="checkbox" value=1 id="consent" required>
+            <label class="form-check-label" for="consent">
+                I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.
+            </label>
+            </div>
+        </form>`);
+        control(undefined, `<input type="submit" form="consent_declaration" class="button btn" value="Continue"/>`);
+        $("#consent_declaration").submit(function() {
+            logSql({
+                "consent": "1",
+            });
+            procedure.go();
+            return false;
+        });
     }],
     ["demographics", function() {
         adContent(`
         <h2 class="col-12"><h2>Demographics</h3>
-        <form class="row g-4" id="demographics">
+        <form action="" class="row g-4" id="demographics">
             <div class="col-12">
                 <h4>What is your gender?</h4>
                 <select class="form-select form-select-lg mt-4" id="gender" required>
@@ -166,11 +231,12 @@ procedure = new Procedure(new Map([
         control(undefined, `<input type="submit" form="demographics" class="button btn" value="Continue"/>`);
         $("#demographics").submit(function() {
             logSql({
-                "dem_gender": $("gender").val(),
-                "dem_eng": $("eng").val(),
-                "dem_age": $("age").val(),
-                "dem_school": $("school").val(),
+                "dem_gender": $("#gender").val(),
+                "dem_eng": $("#eng").val(),
+                "dem_age": $("#age").val(),
+                "dem_school": $("#school").val(),
             });
+            procedure.go();
             return false;
         });
         instr("Please answer all the questions above.");
@@ -178,7 +244,15 @@ procedure = new Procedure(new Map([
     ["tut1_start", function() {
         tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
         $(".carousel-item").each(function(index) {
-            $(this).load(tut1_articles[index]);
+            $(this).load(tut1_articles[index], () => {
+                if (cond.sd_s) {
+                    prepareSD_S();
+                }
+                if (cond.wd_lr || cond.wd_e) {
+                    prepareWD_LRE();
+                }
+                $(".sd, .wd").addClass("wdsd-hidden");
+            });
         });
         adContent(null);
         block();
@@ -198,6 +272,7 @@ procedure = new Procedure(new Map([
     ["tut1_sd", function() {
         if (cond["sd"]) { //sentence detection active?
             block($(".sd"));
+            $(".sd").removeClass("wdsd-hidden")
             instr("Our system highlights sentences with a gray background, if it detects them as biased.");
             return;
         }
@@ -205,23 +280,21 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wd", function() {
         if (cond["wd"]) { //word detection active?
-            block($(".wd"), false, true);
+            block($(".wd"));
+            $(".wd").removeClass("wdsd-hidden")
             instr("Our system highlights phrases with a dotted underline, if it detects them as biased.");
             return;
         }
         procedure.go();
     }],
     ["tut1_controlBar", function() {
-        $("body").prepend(
-            $("#reader-control").clone(true).addClass("app-show-temp")
-        );
-        block($(".app-show-temp"));
+        block($("#reader-control"));
         instr("On top you see the app's control bar.");
     }],
     ["tut1_articleSwitch", function() {
         control();
-        block($("main"), unblockFirst = false); // keeping (transparent) Block still active from tut1_controlBar!
-        $(".app-show-temp").attr("style", "z-index: 4500 !important"); // put temp on top of all blocks to allow interaction
+        unblock($("main"), false);
+        $("#reader-control").removeClass("actionBlock");
         $(".article-navigator").on("click.temp", () => { procedure.go() });
         instr("<p>To switch between two articles, click on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
     }],
@@ -230,16 +303,15 @@ procedure = new Procedure(new Map([
         instr("Very good!");
     }],
     ["tut1_analysisBar", function() {
-        $(".app-show-temp").remove();
         if (cond["wdsd"]) {
-            block($("header"), allowInteract = true);
+            block($("header"));
             instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biased or neutral the current article is written.");
         } else {
             procedure.go("tut1_scroll");
         }
     }],
     ["tut1_clickOnSentence", function() {
-        if (cond["sd_s"]) {
+        if (cond.sd_s) {
             unblock();
             $(".sd").on("click.temp", () => { procedure.go() });
             instr("<p>If you click on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
@@ -251,12 +323,12 @@ procedure = new Procedure(new Map([
         instr("Very good!");
     }],
     ["tut1_sd_s", function() {
-        instr("The <span class='font-italic'>Synonyms Box</span> shows you an alternative sentence with the same meaning as the selected sentence but neutral in its nature.")
-        $("#sd_s-component").addClass("app-show-highlight-sb");
+        instr("<p>The <span class='font-italic'>Synonyms Box</span> shows you an alternative sentence with the same meaning as the selected sentence but neutral in its nature.</p>")
+        $("#sd_s-component").addClass("app-show-highlight");
     }],
     ["tut1_clickOnPhrase", function() {
-        $("#sd_s-component").removeClass("app-show-highlight-sb");
-        if (cond["wd_lr"] || cond["wd_e"]) {
+        $(".app-show-highlight").removeClass("app-show-highlight");
+        if (cond.wd_lr || cond.wd_e) {
             unblock();
             $(".wd").on("click.temp", () => { procedure.go() });
             instr("<p>If you click on a biased phrase (highlighted with a dotted underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
@@ -268,25 +340,25 @@ procedure = new Procedure(new Map([
         instr("Very good!");
     }],
     ["tut1_wd_lr", function() {
-        if (cond["wd_lr"]) {
-            instr("The <span class='font-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).")
-            $("#wd_lr-component").addClass("app-show-highlight-sb");
+        if (cond.wd_lr) {
+            instr("<p>The <span class='font-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).</p>")
+            $("#wd_lr-component").addClass("app-show-highlight");
         } else procedure.go();
     }],
     ["tut1_wd_e", function() {
-        $("#wd_lr-component").removeClass("app-show-highlight-sb");
-        if (cond["wd_e"]) {
-            instr("The <span class='font-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.")
-            $("#wd_e-component").addClass("app-show-highlight-sb");
+        $(".app-show-highlight").removeClass("app-show-highlight");
+        if (cond.wd_e) {
+            instr("<p>The <span class='font-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.</p>")
+            $("#wd_e-component").addClass("app-show-highlight");
         } else procedure.go();
     }],
     ["tut1_clickAnywhere", function() {
-        $("#wd_e-component").removeClass("app-show-highlight-sb");
+        $(".app-show-highlight").removeClass("app-show-highlight");
         unblock();
         $(".article-navigator, main").on("click.temp", () => { procedure.go() });
         senphrase = [];
-        if (cond["sd_s"]) senphrase.push("sentence");
-        if (cond["wd_lr"] || cond["wd_e"]) senphrase.push("phrase");
+        if (cond.sd_s) senphrase.push("sentence");
+        if (cond.wd_lr || cond.wd_e) senphrase.push("phrase");
         senphrase = senphrase.join(" / ");
         instr("<p>Click anywhere on the article besides a biased " + senphrase + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
         control();
@@ -316,8 +388,28 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='font-italic'>Kyle Rittenhouse</span> trial.");
     }],
     ["task1_decide", function() {
-        instr("Please read both articles and then choose, which article uses the most neutral language:</p><form id='article_choice'><input type='radio' id='a' name='article_choice' value='A'> <label for='a'>Article A</label><br><input type='radio' id='b' name='article_choice' value='B'> <label for='b'>Article B</label></form>");
-        control();
+        instr(`<p>Please read both articles and then choose, which article uses the most neutral language:</p>
+        <form action="" id="article_choice" class="text-start">
+            <div class="form-check form-check-lg">
+                <input class="form-check-input" type="radio" name="article" id="artilceA" value=1 required>
+                <label class="form-check-label" for="articleA">
+                    Article A
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="article" id="articleB" value=0>
+                <label class="form-check-label" for="articleB">
+                    Article B
+                </label>
+            </div>
+        </form>`);
+        control(undefined, `<input type="submit" form="article_choice" class="button btn" value="Submit"/>`);
+        $("#article_choice").submit(function() {
+            // logSql({
+            //     "article_choice": $("input:radio[name=article]:checked").val(),
+            // });
+            return false;
+        });
         $(".article-navigator").on("click.temp", () => { procedure.go() });
     }],
     ["task1_activateSubmit", function() {
@@ -329,5 +421,6 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    procedure.go(steps_tart);
+    procedure.go(step_start);
+    // procedure.go("task1_decide");
 });

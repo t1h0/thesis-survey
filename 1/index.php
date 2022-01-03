@@ -20,28 +20,28 @@ include("surveyStart.php");
 </head>
 
 <body>
-<img id="loading-icon" src="img/loading.svg">
+<!-- <img id="loading-icon" src="img/loading.svg"> -->
     <header class="container-fluid text-center sticky-top system ui d-none" id="ui">
         <div class="row justify-content-between ui" id="reader-control">
             <div class="col-3 p-0">
-                <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button disabled" href="#article-container" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon align-middle" aria-hidden="true"></span>
+                <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button disabled" href="#article-container" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon align-middle" aria-bs-hidden="true"></span>
                     <span class="sr-only align-middle">Previous</span>
                 </a>
             </div>
             <div class="col d-flex justify-content-center align-items-center">
-                <p class="m-0 font-weight-bolder" id="heading">Article <span class="articleId">A</span></p>
+                <p class="m-0 fw-bolder" id="heading">Article <span class="articleId">A</span></p>
             </div>
             <div class="col-3 p-0">
-                <a id="next" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button" href="#article-container" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <a id="next" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button" href="#article-container" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-bs-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
             </div>
         </div>
         <?php
         if ($_SESSION["cond"]["wdsd"]) {
-            echo '<div class="row justify-content-around mt-2 ui" id="analysis-bar">
+            echo '<div class="row justify-content-around mt-0 ui" id="analysis-bar">
           ';
             foreach (["wd_lr", "wd_e", "sd_s"] as $i) {
                 if ($_SESSION["cond"][$i] == 1) {
@@ -58,7 +58,7 @@ include("surveyStart.php");
         <div class="row mt-5" id="additional-content"></div>
             <div class="row py-2 system d-none" id="article">
                 <div class="col py-1 px-3">
-                    <div id="article-container" class="carousel slide" data-bs-touch="false" data-ride="carousel" data-interval="false">
+                    <div id="article-container" class="carousel slide" data-bs-touch="false" data-bs-ride="carousel" data-bs-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                             </div>
@@ -72,7 +72,7 @@ include("surveyStart.php");
     </main>
     <footer class="container-fluid text-center d-flex flex-column" id="app">
         <div class="row text-center h-100" id="app-instructions-row">
-            <div class="col align-self-center" id="app-instructions"></div>
+            <div class="col d-flex flex-column align-items-center" id="app-instructions"></div>
         </div>
         <div class="row mt-auto pb-3 pt-1">
             <div class="col d-flex align-items-center justify-content-center d-relative" id="app-controls">
@@ -87,8 +87,6 @@ include("surveyStart.php");
         articles = <?php echo json_encode($_SESSION["articles"]);?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
-    <?php if ($_SESSION["cond"]["wd_lr"] | $_SESSION["cond"]["wd_e"]) echo '<script src="js/wd.js"></script>';
-     if ($_SESSION["cond"]["sd_s"]) echo '<script src="js/sd_s.js"></script>';?>
     <script src="js/app.js"></script>
 </body>
 
