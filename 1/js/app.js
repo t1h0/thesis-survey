@@ -54,16 +54,18 @@ function prepareWD_LRE() {
 
 // General
 
-function logSql(data_raw, run = 1) {
+function logSql(data_raw) {
     $("#loading-icon").removeClass("d-none");
-    if (run <= 3) {
+    run = 1;
+    while (run <= 3) {
         $.post("sqlLog.php", data_raw, (response) => {
-            if (response == 0) {
-                logSql(data_raw, ++run);
+            if (response == 0) run++;
+            else {
+                run = 4;
+                $("#loading-icon").addClass("d-none");
             };
         });
     };
-    $("#loading-icon").addClass("d-none");
 };
 
 
@@ -190,8 +192,8 @@ procedure = new Procedure(new Map([
     }],
     ["demographics", function() {
         adContent(`
-        <h2 class="col-12"><h2>Demographics</h3>
-        <form action="" class="row g-4" id="demographics">
+        <div class="col"><h2>Demographics</h2>
+        <form action="" class="row g-4 mt-3" id="demographics">
             <div class="col-12">
                 <h4>What is your gender?</h4>
                 <select class="form-select form-select-lg mt-4" id="gender" required>
@@ -228,7 +230,8 @@ procedure = new Procedure(new Map([
                     <option value=7>Graduate work</option>
                 </select>
             </div>
-        </form>`);
+        </form>
+        </div>`);
         control(undefined, `<input type="submit" form="demographics" class="button btn" value="Continue"/>`);
         $("#demographics").submit(function() {
             logSql({
@@ -244,9 +247,9 @@ procedure = new Procedure(new Map([
     }],
     ["political_stance", function() {
         adContent(`
-        <h2 class="col-12"><h2>Political stance</h3>
-        <form action="" class="row g-4" id="form_political_stance">
-            <div class="col-12">
+        <div class="col"><h2>Political stance</h2>
+        <form action="" class="row g-4 mt-3" id="form_political_stance">
+            <div class="col">
                 <h4>Do you consider yourself to be liberal, conservative, or somewhere in between?</h4>
                 <div class="d-flex justify-content-center mt-5">
                 <div class="" style="width:312px">
@@ -256,8 +259,9 @@ procedure = new Procedure(new Map([
                 </div>
                 </div>
             </div>
-        </form>`);
-        control(undefined, `<input type="submit" form="form_political_stance" class="button btn" value="Submit"/>`);
+        </form>
+        </div>`);
+        control(undefined, `<input type="submit" form="form_political_stance" class="button btn" value="Continue"/>`);
         $("#form_political_stance").submit(function() {
             logSql({
                 "political_stance": $("#political_stance").val(),
@@ -265,7 +269,19 @@ procedure = new Procedure(new Map([
             procedure.go();
             return false;
         });
-        instr("Please answer all the questions above.");
+        instr("Please answer the question above.");
+    }],
+    ["mediabias_instruction", function() {
+        adContent(`<div class='col'><h2>Instruction</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon ther level of bias. Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting.</p><p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
+        instr("Please read the full instructions above.");
+        control("Continue");
+    }],
+    ["loading_app", function() {
+        $("#loading-icon").removeClass("d-none");
+        setTimeout(() => {
+            procedure.go();
+            $("#loading-icon").addClass("d-none")
+        }, 3000);
     }],
     ["tut1_start", function() {
         tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
@@ -414,7 +430,7 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='font-italic'>Kyle Rittenhouse</span> trial.");
     }],
     ["task1_decide", function() {
-        instr(`<p>Please read both articles and then choose, which article uses the most neutral language:</p>
+        instr(`<p>Please read both articles and then choose, which article uses the most neutral language. For your judgment of bias, you are free to follow or not follow the system's indication of bias based on your own understanding of the articles.</p><p>Out of these two articles, the most neutral article is:</p>
         <form action="" id="article_choice" class="text-start">
             <div class="form-check form-check-lg">
                 <input class="form-check-input" type="radio" name="article" id="artilceA" value=1 required>
@@ -438,6 +454,9 @@ procedure = new Procedure(new Map([
         });
         $(".article-navigator").on("click.temp", () => { procedure.go() });
     }],
+    ["tut2_start", function() {
+
+    }]
     ["task1_activateSubmit", function() {
         $(".article-navigator").off("click.temp");
     }],
