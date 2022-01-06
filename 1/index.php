@@ -20,7 +20,7 @@ include("surveyStart.php");
 </head>
 
 <body>
-<!-- <img id="loading-icon" src="img/loading.svg"> -->
+<img id="loading-icon" class="d-none" src="img/loading.svg">
     <header class="container-fluid text-center sticky-top system ui d-none" id="ui">
         <div class="row justify-content-between ui" id="reader-control">
             <div class="col-3 p-0">

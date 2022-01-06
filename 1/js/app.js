@@ -55,14 +55,15 @@ function prepareWD_LRE() {
 // General
 
 function logSql(data_raw, run = 1) {
+    $("#loading-icon").removeClass("d-none");
     if (run <= 3) {
         $.post("sqlLog.php", data_raw, (response) => {
-            console.log(response);
             if (response == 0) {
                 logSql(data_raw, ++run);
             };
         });
     };
+    $("#loading-icon").addClass("d-none");
 };
 
 
@@ -241,6 +242,31 @@ procedure = new Procedure(new Map([
         });
         instr("Please answer all the questions above.");
     }],
+    ["political_stance", function() {
+        adContent(`
+        <h2 class="col-12"><h2>Political stance</h3>
+        <form action="" class="row g-4" id="form_political_stance">
+            <div class="col-12">
+                <h4>Do you consider yourself to be liberal, conservative, or somewhere in between?</h4>
+                <div class="d-flex justify-content-center mt-5">
+                <div class="" style="width:312px">
+                <label for="political_stance" class="form-label float-start">Very liberal</label>
+                <label for="" class="form-label float-end">Very conservative</label>
+                <input type="range" class="form-range" id="political_stance" required>
+                </div>
+                </div>
+            </div>
+        </form>`);
+        control(undefined, `<input type="submit" form="form_political_stance" class="button btn" value="Submit"/>`);
+        $("#form_political_stance").submit(function() {
+            logSql({
+                "political_stance": $("#political_stance").val(),
+            });
+            procedure.go();
+            return false;
+        });
+        instr("Please answer all the questions above.");
+    }],
     ["tut1_start", function() {
         tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
         $(".carousel-item").each(function(index) {
@@ -403,7 +429,7 @@ procedure = new Procedure(new Map([
                 </label>
             </div>
         </form>`);
-        control(undefined, `<input type="submit" form="article_choice" class="button btn" value="Submit"/>`);
+        control(undefined, `<input type="submit" form="article_choice" class="button btn" value="Continue"/>`);
         $("#article_choice").submit(function() {
             // logSql({
             //     "article_choice": $("input:radio[name=article]:checked").val(),

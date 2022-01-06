@@ -3,7 +3,7 @@ session_start();
 include("sqlCreds.php");
 
 $target_table = "Results";
-$allowed_cols = ["state","dem_gender","dem_eng","dem_age","dem_school","article_choice","consent"];
+$allowed_cols = ["state","dem_gender","dem_eng","dem_age","dem_school","article_choice","consent","political_stance"];
 $values = array();
 $update = "";
 foreach($_POST as $k => $v){
