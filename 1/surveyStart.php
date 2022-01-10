@@ -34,19 +34,20 @@ $_SESSION["studyid"] = $_GET["studyid"];
 $_SESSION["sessionid"] = $_GET["sessionid"];
 
 if (isset($_GET["test"])) {
+    $_SESSION["test"] = true;
     $_SESSION["cond"] = [
-        "wd_lr" => true,
-        "wd_e" => false,
+        "wd_lr" => ($temp = true),
+        "wd_e" => ($temp2 = true),
+        "wd_lre" => $temp || $temp2,
         "wd" => true,
-        "sd" => true,
-        "sd_s" => true,
-        "wdsd" => true,
+        "sd" => 2
     ];
     list(,,$Apath,,,$Bpath) = getArticles();
     $_SESSION["articles"] = [$Apath, $Bpath];
     $_SESSION["step"] = 0;
 }
 else {
+    $_SESSION["test"] = false;
 
     try {
         $conn = new PDO("mysql:host=$servername;dbname=mb", $username, $password, array(PDO::ATTR_PERSISTENT => true));
@@ -71,7 +72,7 @@ else {
             $_SESSION["articles"] = [$Apath, $Bpath];
             
             $conn->beginTransaction();
-            $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 20) THEN latest_cond + 1 ELSE 1 END")->execute();
+            $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 24) THEN latest_cond + 1 ELSE 1 END")->execute();
             $sql = $conn->prepare("SELECT * FROM Manager");
             $sql->execute();
             $cond = $sql->fetch()["latest_cond"];
@@ -81,13 +82,12 @@ else {
             $_SESSION["step"] = 0;
         }
         $_SESSION["cond"] = [
-            "wd_lr" => ($cond + 2) % 5 == 0 || $cond % 5 == 0,
-            "wd_e" => ($cond + 1) % 5 == 0 || $cond % 5 == 0,
-            "wd" => ($cond + 4) % 5 != 0,
-            "sd" => $cond >= 6 && $cond <= 15,
-            "sd_s" => $cond >= 11 && $cond <= 15,
+            "wd_lr" => $cond >= 13,
+            "wd_e" => $cond % 2 == 0,
+            "wd_lre" => $cond >= 13 && $cond % 2 == 0,
+            "wd" => ($cond >= 7 && $cond <= 12) || ($cond >= 19 && $cond <= 24),
+            "sd" => in_array($cond,[1,2,7,8,13,14,19,20]) ? 0 : (in_array($cond,[3,4,9,10,15,16,21,22]) ? 1 : 2),
         ];
-        $_SESSION["cond"]["wdsd"] = $_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"];
     } catch (PDOException $e) {
         echo "Error: $e";
     }

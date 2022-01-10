@@ -1,14 +1,5 @@
-.wd {
-    cursor: pointer;
-}
-
 .wdsd-component {
     border-color: steelblue !important;
-}
-
-#wd_e-component,
-#wd_lr-component {
-    width: 360px !important;
 }
 
 .wd-bar {
@@ -35,8 +26,4 @@
     margin-left: calc(50% - 0.5em);
     transition: margin-left 1s;
     z-index: 1;
-}
-
-#sd_s-component {
-    min-width: 360px !important;
 }

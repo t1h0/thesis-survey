@@ -2,10 +2,6 @@
     --dark-gray: #454545;
 }
 
-.wd {
-    border-bottom: 0.2em dotted var(--dark-gray);
-}
-
-.wd-active {
-    border-bottom: 0.2em solid var(--dark-gray) !important;
+.wd:not(.wdsd-hidden) {
+    border-bottom: 0.2em solid var(--dark-gray);
 }

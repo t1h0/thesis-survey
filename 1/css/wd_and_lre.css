@@ -1,0 +1,3 @@
+.wd_lre.wd:not(.wdsd-hidden) {
+    border-bottom: 0.2em dashed var(--dark-gray) !important;
+}

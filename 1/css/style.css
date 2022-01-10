@@ -136,11 +136,6 @@ main {
     pointer-events: none;
 }
 
-.wdsd-hidden {
-    background-color: transparent !important;
-    border-bottom: none !important;
-}
-
 
 /* .blocker {
     position: fixed;

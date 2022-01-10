@@ -1,7 +1,3 @@
-.sd {
+.sd:not(.wdsd-hidden) {
     background-color: #e0e0e0;
-}
-
-.sd-active {
-    background-color: lightsteelblue;
 }

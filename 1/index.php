@@ -11,10 +11,16 @@ include("surveyStart.php");
     <link rel="stylesheet" href="css/style.css">
     <?php
     // including respective css-files
-    foreach (["wd","sd","wdsd","sd_s"] as $i) {
-        if ($_SESSION["cond"][$i]) echo '<link rel="stylesheet" href="css/' . $i . '.css">
-    ';
-    };
+    if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]){
+        echo '<link rel="stylesheet" href="css/analysis-bar.css">';
+    }
+    if ($_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd.css">';
+    if ($_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["wd_lr"]) echo '<link rel="stylesheet" href="css/wd_lre.css">';
+    if (($_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["wd_lr"]) && $_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd_and_lre.css">';
+    if ($_SESSION["cond"]["sd"] > 0) {
+        echo '<link rel="stylesheet" href="css/sd.css">';
+        if ($_SESSION["cond"]["sd"] == 2) echo '<link rel="stylesheet" href="css/sd_s.css">';
+    }     
     ?>
     <title></title>
 </head>
@@ -40,14 +46,15 @@ include("surveyStart.php");
             </div>
         </div>
         <?php
-        if ($_SESSION["cond"]["wdsd"]) {
+        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]) {
             echo '<div class="row justify-content-around mt-0 ui" id="analysis-bar">
           ';
-            foreach (["wd_lr", "wd_e", "sd_s"] as $i) {
+            foreach (["wd_lr", "wd_e"] as $i) {
                 if ($_SESSION["cond"][$i] == 1) {
                     include("s/" . $i . ".html");
                 }
             };
+            if($_SESSION["cond"]["sd"] == 2) include("s/sd_s.html");
             echo "</div>
           ";
         }
@@ -84,6 +91,7 @@ include("surveyStart.php");
     <script src="js/ui.js"></script>
     <script type="text/javascript">
         cond = <?php echo json_encode($_SESSION["cond"]);?>;
+        testmode = <?php echo json_encode($_SESSION["test"]) ?>;
         articles = <?php echo json_encode($_SESSION["articles"]);?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>

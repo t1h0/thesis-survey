@@ -1,3 +1,11 @@
 .sd {
     cursor: pointer;
 }
+
+.sd-active {
+    background-color: lightsteelblue !important;
+}
+
+#sd_s-component {
+    min-width: 360px !important;
+}

@@ -1,0 +1,17 @@
+:root {
+    --dark-gray: #454545;
+}
+
+.wd_lre:not(.wdsd-hidden) {
+    border-bottom: 0.2em dotted var(--dark-gray);
+    cursor: pointer;
+}
+
+.wd_lre-active {
+    text-shadow: 0 0 1px black;
+}
+
+#wd_e-component,
+#wd_lr-component {
+    width: 360px !important;
+}
