@@ -1,29 +1,26 @@
 <?php
 
-function getArticles($article = null){
+function getArticles(){
     $dirs = ["left", "center", "right", "left alt", "center alt", "right alt"];
     $files = ["low", "middle", "high"];
 
-    if($article) return "articles/".(string) array_search($article[0],$dirs)."/".(string) array_search($article[1],$files).".html"; // return file path if pol and bias provided
-
-    // choosing articles
-    // define the folder (therefore political stance) for each article (0+3 left,1+4 center,2+5 right)
-    $articleA_dir = random_int(0, 2);
-    $articleB_dir = random_int(0, 2);
-    if ($articleA_dir == $articleB_dir) { // will both articles have the same political stance?
-        if (random_int(0, 1) == 0) { //randomly change on of the articles
-            $articleA_dir += 3;
+    // choosing article stance at random (0+3 left,1+4 center,2+5 right)
+    $articleA_ind = random_int(0, 2);
+    $articleB_ind = random_int(0, 2);
+    if ($articleA_ind == $articleB_ind) { // will both articles have the same political stance?
+        if (random_int(0, 1) == 0) { //randomly change one of the articles to alternative article
+            $articleA_ind += 3;
         } else {
-            $articleB_dir += 3;
+            $articleB_ind += 3;
         }
     }
 
-    // define the file (therefore bias level) for each article
+    // define bias level for each article at random
     $articleA_file = random_int(0, 2);
     while (($articleB_file = random_int(0, 2)) == $articleA_file);
 
     // convert to actual article characteristics
-    return array($dirs[$articleA_dir],$files[$articleA_file],"articles/$articleA_dir/$articleA_file.html",$dirs[$articleB_dir],$files[$articleB_file],"articles/$articleB_dir/$articleB_file.html");
+    return array(array($dirs[$articleA_ind],$files[$articleA_file]),array($dirs[$articleB_ind],$files[$articleB_file]));
 }
 
 
@@ -42,9 +39,8 @@ if (isset($_GET["test"])) {
         "wd" => true,
         "sd" => 2
     ];
-    list(,,$Apath,,,$Bpath) = getArticles();
-    $_SESSION["articles"] = [$Apath, $Bpath];
     $_SESSION["step"] = 0;
+    $_SESSION["articles"] = getArticles();
 }
 else {
     $_SESSION["test"] = false;
@@ -64,20 +60,20 @@ else {
                 die();
             }
             $cond = $result["cond"];
-            $_SESSION["articles"] = array(getArticles(array($result["articleA_pol"],$result["articleA_bias"])),getArticles(array($result["articleB_pol"],$result["articleB_bias"])));
             $_SESSION["step"] = $result["step"];
+            $_SESSION["articles"] = array([$result["articleA_pol"],$result["articleA_bias"]],[$result["articleB_pol"],$result["articleB_bias"]]);
         } else {
             // selecting articles
-            list($Apol,$Abias,$Apath,$Bpol,$Bbias,$Bpath) = getArticles();
-            $_SESSION["articles"] = [$Apath, $Bpath];
+            $_SESSION["articles"] = getArticles();
             
             $conn->beginTransaction();
             $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 24) THEN latest_cond + 1 ELSE 1 END")->execute();
             $sql = $conn->prepare("SELECT * FROM Manager");
             $sql->execute();
             $cond = $sql->fetch()["latest_cond"];
-            $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,articleA_pol,articleA_bias,articleB_pol,articleB_bias,step) VALUES (?,?,?,$cond,?,?,?,?,?)");
-            $sql->execute(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"], $Apol, $Abias, $Bpol, $Bbias, 0));
+            $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,step,articleA_pol,articleA_bias,articleB_pol,articleB_bias) VALUES (?,?,?,$cond,?,?,?,?,?)");
+            $values = array_merge(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"],0),$_SESSION["articles"][0],$_SESSION["articles"][1]);
+            $sql->execute($values);
             $conn->commit();
             $_SESSION["step"] = 0;
         }

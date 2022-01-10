@@ -1,3 +1,20 @@
+// General
+
+function rndInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function appLoad() {
+    $("#loading-icon").removeClass("d-none");
+    $("body").addClass("actionBlock");
+    setTimeout(() => {
+        procedure.go();
+        $("#loading-icon").addClass("d-none");
+        $("body").removeClass("actionBlock");
+    }, rndInt(1000, 3000));
+}
+
+// Condition preparation
 // sd_s
 
 function resetSentences() {
@@ -19,7 +36,7 @@ function prepareSD_S() {
     });
 };
 
-// wd_lr + wd_e
+// wd_lre
 
 function resetWords() {
     // deactivate word
@@ -52,22 +69,31 @@ function prepareWD_LRE() {
     });
 };
 
-// General
+// SQL
 
-function logSql(data_raw) {
-    if (testmode) return;
+function logSql(data_raw, callback = () => {}) {
+    if (testmode) {
+        callback();
+        return;
+    };
     $("#loading-icon").removeClass("d-none");
     run = 1;
     while (run <= 3) {
         $.post("sqlLog.php", data_raw, (response) => {
-            if (response == 0) run++;
-            else {
+            if (response != 1) {
+                run++;
+            } else {
                 run = 4;
                 $("#loading-icon").addClass("d-none");
+                callback();
+                return;
             };
         });
     };
+    $("body").html("<h1>An error occured!</h1><h5>Please reload the page.</h5>");
 };
+
+// DOM Manipulation
 
 
 function unblock(target, removeHighlight = true) {
@@ -77,12 +103,13 @@ function unblock(target, removeHighlight = true) {
 
 };
 
-function block(except, allowInteract = false, excHighlight = false, allowScroll = false, unblockFirst = true) {
+function block(except, allowInteract = false, excHighlight = false, allowScroll = false, unblockFirst = true, blockApp = false) {
     if (unblockFirst) unblock();
     if (!allowScroll) {
         $("body").addClass("scrollBlock");
     };
-    keep = $("#app, #loading-icon");
+    keep = $("#loading-icon");
+    if (!blockApp) keep = keep.add("#app");
     if (except) {
         keep = keep.add(except);
         if (!allowInteract) except.addClass("actionBlock");
@@ -112,27 +139,14 @@ function instr(instruction) {
     $("#loading-icon").css("transform", "translateX(-50%) translateY(calc(-50% - " + $("#app").outerHeight() + "))");
 };
 
-function control(text = null, customHTML = null) {
+function control(text = null, customHTML = null, onClick = () => procedure.go()) {
     $("#app-controls").empty();
     if (!text) {
         $("#app-controls").html(customHTML);
     } else {
-        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(function() {
-            procedure.go()
-        }));
+        $("#app-controls").append($("<button id='app-button'></button>").addClass("btn button").text(text).click(() => onClick()));
     };
 };
-
-// function go(toState) {
-//     if (typeof(toState) == "string") {
-//         state = toCase;
-//     } else if (typeof(window.nextState) == "undefined") {
-//         state = "start";
-//     } else {
-//         state = window.nextState;
-//     }
-//     logSql({ "state": state });
-// }
 
 // Procedure
 
@@ -185,8 +199,7 @@ procedure = new Procedure(new Map([
         $("#consent_declaration").submit(function() {
             logSql({
                 "consent": "1",
-            });
-            procedure.go();
+            }, () => procedure.go());
             return false;
         });
     }],
@@ -239,8 +252,7 @@ procedure = new Procedure(new Map([
                 "dem_eng": $("#eng").val(),
                 "dem_age": $("#age").val(),
                 "dem_school": $("#school").val(),
-            });
-            procedure.go();
+            }, () => procedure.go());
             return false;
         });
         instr("Please answer all the questions above.");
@@ -265,8 +277,7 @@ procedure = new Procedure(new Map([
         $("#form_political_stance").submit(function() {
             logSql({
                 "political_stance": $("#political_stance").val(),
-            });
-            procedure.go();
+            }, () => procedure.go());
             return false;
         });
         instr("Please answer the question above.");
@@ -274,19 +285,11 @@ procedure = new Procedure(new Map([
     ["mediabias_instruction", function() {
         adContent(`<div class='col'><h2>Instruction</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
         instr("Please read the full instructions above.");
-        control("Continue");
-    }],
-    ["loading_app", function() {
-        $("#loading-icon").removeClass("d-none");
-        setTimeout(() => {
-            procedure.go();
-            $("#loading-icon").addClass("d-none")
-        }, 3000);
+        control("Continue", null, appLoad);
     }],
     ["tut1_start", function() {
-        tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
         $(".carousel-item").each(function(index) {
-            $(this).load(tut1_articles[index], () => {
+            $(this).load("articles/tut1.php", { "index": index }, () => {
                 if (cond.sd == 2) prepareSD_S();
                 if (cond.wd_lre) prepareWD_LRE();
                 $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
@@ -319,7 +322,7 @@ procedure = new Procedure(new Map([
         if (cond.wd) { //word detection active?
             if (cond.wd_lre) $(".wd").not(".wd_lre").removeClass("wdsd-hidden");
             else $(".wd").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd'>solid underline</span>, if it detects them as biased. A biased phrase is a phrase, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>");
+            instr("<p>Our system highlights phrases with a <span class='wd'>solid</span> underline, if it detects them as biased. A biased phrase is a phrase, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>");
             return;
         }
         procedure.go();
@@ -328,7 +331,7 @@ procedure = new Procedure(new Map([
         if (cond.wd_lre) { // feature word detection active?
             if (cond.wd) $(".wd_lre").not(".wd").removeClass("wdsd-hidden");
             else $(".wd_lre").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd_lre'>dotted underline</span>, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar " + (cond.wd_lr ? (cond.wd_e ? "political / establishment" : "political") : "establishment") + " stance.</p>");
+            instr("<p>Our system highlights phrases with a <span class='wd_lre'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar " + (cond.wd_lr ? (cond.wd_e ? "political / establishment" : "political") : "establishment") + " stance.</p>");
             return;
         }
         procedure.go();
@@ -336,7 +339,7 @@ procedure = new Procedure(new Map([
     ["tut1_wd_and_lre", function() {
         if (cond.wd_lre && cond.wd) { // word detection and feature phrase detection active?
             $(".wd.wd_lre").removeClass("wdsd-hidden");
-            instr("<p>If a feature phrase is also detected to be a biased phrase, it will be highlighted with a <span class='wd wd_lre'>dashed underline</span>.</p>");
+            instr("<p>If a feature phrase is also detected to be a biased phrase, it will be highlighted with a <span class='wd wd_lre'>dashed</span> underline.</p>");
             return;
         }
         procedure.go();
@@ -349,7 +352,7 @@ procedure = new Procedure(new Map([
         control();
         unblock($("main"), false);
         $("#reader-control").removeClass("actionBlock");
-        $(".article-navigator").on("click.temp", () => { procedure.go() });
+        $(".article-navigator").on("click.temp", () => procedure.go());
         instr("<p>To switch between two articles, click on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
     }],
     ["tut1_articleSwitch_success", function() {
@@ -360,14 +363,12 @@ procedure = new Procedure(new Map([
         if (cond.wd_lre || cond.sd == 2) {
             block($("header"));
             instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biased or neutral the current article is written.");
-        } else {
-            procedure.go("tut1_scroll");
-        }
+        } else procedure.go("tut1_scroll");
     }],
     ["tut1_clickOnSentence", function() {
         if (cond.sd == 2) {
             unblock();
-            $(".sd").on("click.temp", () => { procedure.go() });
+            $(".sd").on("click.temp", () => procedure.go());
             instr("<p>If you click on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
             control();
         } else procedure.go("tut1_clickOnPhrase");
@@ -384,7 +385,7 @@ procedure = new Procedure(new Map([
         $(".app-show-highlight").removeClass("app-show-highlight");
         if (cond.wd_lre) {
             unblock();
-            $(".wd_lre").on("click.temp", () => { procedure.go() });
+            $(".wd_lre").on("click.temp", () => procedure.go());
             instr("<p>If you click on a feature phrase (highlighted with a <span class='wd_lre'>dotted</span> " + (cond.wd ? "or <span class='wd wd_lre'>dashed</span>" : "") + " underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
             control();
         } else procedure.go("tut1_clickAnywhere");
@@ -409,12 +410,12 @@ procedure = new Procedure(new Map([
     ["tut1_clickAnywhere", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
         unblock();
-        $(".article-navigator, main").on("click.temp", () => { procedure.go() });
+        $(".article-navigator, main").on("click.temp", () => procedure.go());
         senphrase = [];
         if (cond.sd == 2) senphrase.push("sentence");
         if (cond.wd_lr || cond.wd_e) senphrase.push("phrase");
         senphrase = senphrase.join(" / ");
-        instr("<p>Click anywhere on the article besides a " + cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word" + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
+        instr("<p>Click anywhere on the article besides a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
         control();
     }],
     ["tut1_clickAnywhere_success", function() {
@@ -425,7 +426,7 @@ procedure = new Procedure(new Map([
         unblock();
         control();
         instr("<p>Finally, to continue reading and see the full article, scroll up and down on your device.</p><p>Try it!</p>");
-        $(window).on("scroll.temp", () => { procedure.go() });
+        $(window).on("scroll.temp", () => procedure.go());
     }],
     ["tut1_scroll_success", function() {
         instr("Very good!");
@@ -433,45 +434,55 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_end", function() {
         instr("<p>Please take some time now to get familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
-        control("Start");
+        control("Start", null, appLoad);
     }],
     ["task1_start", function() {
         $(".carousel-item").each(function(index) {
-            $(this).load(articles[index]);
+            $(this).load("articles/task1.php", { "index": index }, () => {
+                if (cond.sd == 2) prepareSD_S();
+                if (cond.wd_lre) prepareWD_LRE();
+            });
         });
-        instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.");
+        instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
+    }],
+    ["task1_read", function() {
+        instr(`<p>Please read both articles and then click 'Continue' to choose, which article uses the most neutral language.</p>`);
+        $("#app-button").prop("disabled", true);
+        $(".article-navigator").on("click.temp", () => {
+            $(".article-navigator").off("click.temp");
+            $("#app-button").prop("disabled", false);
+        });
     }],
     ["task1_decide", function() {
-        instr(`<p>Please read both articles and then choose, which article uses the most neutral language. For your judgment of bias, you are free to follow or not follow the system's indication of bias based on your own understanding of the articles.</p><p>Out of these two articles, the most neutral article is:</p>
+        instr(`<p>For your judgment of bias, you are free to follow or not follow the system's indication of bias based on your own understanding of the articles.</p><p>Out of these two articles, the most neutral article is:</p>
         <form action="" id="article_choice" class="text-start">
             <div class="form-check form-check-lg">
-                <input class="form-check-input" type="radio" name="article" id="artilceA" value=1 required>
+                <input class="form-check-input" type="radio" name="article" id="articleA" value=0 required>
                 <label class="form-check-label" for="articleA">
                     Article A
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="article" id="articleB" value=0>
+                <input class="form-check-input" type="radio" name="article" id="articleB" value=1>
                 <label class="form-check-label" for="articleB">
                     Article B
                 </label>
             </div>
         </form>`);
-        control(undefined, `<input id="submitbtn" type="submit" form="article_choice" class="button btn" value="Continue" disabled/>`);
+        control(undefined, `<input id="submitbtn" type="submit" form="article_choice" class="button btn" value="Continue"/>`);
         $("#article_choice").submit(function() {
-            // logSql({
-            //     "article_choice": $("input:radio[name=article]:checked").val(),
-            // });
+            logSql({
+                "article_choice": $("input:radio[name=article]:checked").val()
+            }, appLoad);
             return false;
         });
-        $(".article-navigator").on("click.temp", () => { procedure.go() });
-    }],
-    ["task1_activateSubmit", function() {
-        $(".article-navigator").off("click.temp");
-        $("#submitbtn").prop("disabled", false);
     }],
     ["tut2_start", function() {
-
+        $("#article-column").empty();
+        $("#article-column").load("articles/task2.php", { "index": 0 }, () => {});
+        block();
+        $("header").empty();
+        $("header").css({ "height": "0.5rem" });
     }],
     ["survey_end", function() {
         return;
@@ -480,5 +491,19 @@ procedure = new Procedure(new Map([
 
 $(document).ready(function() {
     // procedure.go(step_start);
-    procedure.go("tut1_start");
+    // tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
+    // $(".carousel-item").each(function(index) {
+    //     $(this).load(tut1_articles[index], () => {
+    //         if (cond.sd == 2) prepareSD_S();
+    //         if (cond.wd_lre) prepareWD_LRE();
+    //     });
+    // });
+    adContent(null);
+    unblock();
+    procedure.go("tut2_start");
 });
+
+/* TO DO:
+- Record Time (especially at try out)
+- State saves
+*/

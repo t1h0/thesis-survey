@@ -27,8 +27,8 @@ include("surveyStart.php");
 
 <body>
 <img id="loading-icon" class="d-none" src="img/loading.svg">
-    <header class="container-fluid text-center sticky-top system ui d-none" id="ui">
-        <div class="row justify-content-between ui" id="reader-control">
+    <header class="container-fluid text-center sticky-top system d-none" id="ui">
+        <div class="row justify-content-between" id="reader-control">
             <div class="col-3 p-0">
                 <a id="prev" class="btn w-100 h-100 d-flex justify-content-center align-items-center article-navigator button disabled" href="#article-container" role="button" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon align-middle" aria-bs-hidden="true"></span>
@@ -64,7 +64,7 @@ include("surveyStart.php");
         <div class="container position-relative h-100">
         <div class="row mt-5" id="additional-content"></div>
             <div class="row py-2 system d-none" id="article">
-                <div class="col py-1 px-3">
+                <div class="col py-1 px-3" id="article-column">
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-bs-ride="carousel" data-bs-interval="false">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
@@ -92,7 +92,6 @@ include("surveyStart.php");
     <script type="text/javascript">
         cond = <?php echo json_encode($_SESSION["cond"]);?>;
         testmode = <?php echo json_encode($_SESSION["test"]) ?>;
-        articles = <?php echo json_encode($_SESSION["articles"]);?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
     <script src="js/app.js"></script>

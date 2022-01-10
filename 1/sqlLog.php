@@ -20,7 +20,9 @@ try {
   $conn->prepare("UPDATE $target_table SET $update WHERE pid = ?")->execute($values);
   echo 1;
 } catch (PDOException $e) {
-  echo $e;
+  if(!isset($_SESSION["errors"])) $_SESSION["errors"] = array($e);
+  else array_push($_SESSION["errors"],$e);
+  echo 0;
 }
 
 // TODO: DELETE ERROR OUTPUT
