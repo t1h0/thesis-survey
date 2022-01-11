@@ -349,7 +349,7 @@ procedure = new Procedure(new Map([
         if (cond.wd_lre) { // feature word detection active?
             if (cond.wd) $(".wd_lre").not(".wd").removeClass("wdsd-hidden");
             else $(".wd_lre").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd_lre'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar " + (cond.wd_lr ? (cond.wd_e ? "political / establishment" : "political") : "establishment") + " stance.</p>");
+            instr("<p>Our system highlights phrases with a <span class='wd_lre'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is distinctive for reports by newspapers sharing a certain " + (cond.wd_lr ? (cond.wd_e ? "political / establishment" : "political") : "establishment") + " stance.</p>");
             return;
         }
         procedure.go();
@@ -414,14 +414,14 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wd_lr", function() {
         if (cond.wd_lr) {
-            instr("<p>The <span class='fst-italic'>Left-Right Stance</span> indicates the average political stance of newspapers, that characteristically use the selected feature phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).</p>")
+            instr("<p>The <span class='fst-italic'>Left-Right Stance</span> gives information about the overall political stance of newspapers, that distinctively use the selected feature phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).</p>")
             $("#wd_lr-component").addClass("app-show-highlight");
         } else procedure.go();
     }],
     ["tut1_wd_e", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
         if (cond.wd_e) {
-            instr("<p>The <span class='fst-italic'>Establishment Stance</span> indicates the average stance towards the establishment of newspapers, that characteristically use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.</p>")
+            instr("<p>The <span class='fst-italic'>Establishment Stance</span> gives information about the overall stance towards establishment of newspapers, that distinctively use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.</p>")
             $("#wd_e-component").addClass("app-show-highlight");
         } else procedure.go();
     }],
