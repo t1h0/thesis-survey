@@ -55,7 +55,7 @@ main {
     background-color: #fff;
     padding-bottom: 25vh;
     transition: padding-bottom 1s;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 
