@@ -110,7 +110,26 @@ main {
 } */
 
 .app-show-highlight {
-    background-color: steelblue !important;
+    -webkit-animation: pulse 0.8s ease-in-out infinite alternate;
+    animation: pulse 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes pulse {
+    0% {
+        background: transparent;
+    }
+    100% {
+        background: steelblue;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        background: transparent;
+    }
+    100% {
+        background: steelblue;
+    }
 }
 
 .app-show-temp {

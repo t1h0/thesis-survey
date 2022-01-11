@@ -30,6 +30,7 @@ function prepareSD_S() {
         e.stopPropagation(); // to prevent immediate automatic click on main
 
         $(".sd-active").removeClass("sd-active");
+        if (!$(this).children(".wd_lre-active").length) resetWords();
 
         $(this).addClass("sd-active"); // activating clicked sentence (this)
         $("#sd_s").text($(this).attr("sd_s"));
@@ -59,6 +60,7 @@ function prepareWD_LRE() {
 
         //deactivating potential previous active word or sentence
         $(".wd_lre-active").removeClass("wd_lre-active");
+        resetSentences();
 
         $(this).addClass("wd_lre-active"); // activating clicked word (this)
         ["wd_lr", "wd_e"].forEach((i) => {
@@ -196,7 +198,7 @@ class Procedure {
 procedure = new Procedure(new Map([
     ["survey_start", function() {
         instr();
-        adContent("<div class='col'><h2>Welcome!</h2><p class='mt-3'>Welcome to this study, which takes most people about 5-15 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 1.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 5-15 minutes without interruptions.</p></div>");
+        adContent("<div class='col'><h2>Welcome!</h2><p class='mt-3'>Welcome to this study, which takes most people about 15-20 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 2.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 15-20 minutes without interruptions.</p></div>");
     }],
     ["consent", function() {
         adContent("<div class='col'><h2>Study Information</h2><p>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p></div>");
@@ -288,7 +290,8 @@ procedure = new Procedure(new Map([
             </div>
         </form>
         </div>`);
-        control(undefined, `<input type="submit" form="form_political_stance" class="button btn" value="Continue"/>`);
+        control(undefined, `<input id="submit" type="submit" form="form_political_stance" class="button btn" value="Continue" disabled/>`);
+        $("#political_stance").one("click", () => $("#submit").prop("disabled", false));
         $("#form_political_stance").submit(function() {
             logSql({
                 "political_stance": $("#political_stance").val(),
@@ -306,7 +309,7 @@ procedure = new Procedure(new Map([
             });
         });
         adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
-        instr("Please read the full instructions above.");
+        instr("Please fully read the instructions above.");
         control("Continue", null, appLoad);
     }],
     ["tut1_start", function() {
@@ -382,10 +385,9 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_clickOnSentence", function() {
         if (cond.sd == 2) {
-            unblock();
+            block($("body"), true);
             $(".sd").on("click.temp", () => {
                 $(".sd").off("click.temp");
-                console.log("ja");
                 control("Continue");
                 instr("Very good!");
             });
@@ -400,7 +402,7 @@ procedure = new Procedure(new Map([
     ["tut1_clickOnPhrase", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
         if (cond.wd_lre) {
-            unblock();
+            block($("body"), true);
             $(".wd_lre").on("click.temp", () => {
                 $(".wd_lre").off("click.temp");
                 control("Continue");
@@ -425,13 +427,13 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_clickAnywhere", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
-        unblock();
-        $(".article-navigator, main").on("click.temp", () => {
-            $(".article-navigator, main").off("click.temp");
+        block($("body"), true);
+        $("main").on("click.temp", () => {
+            $("main").off("click.temp");
             control("Continue");
-            instr("Very good!");
+            instr("<p>Very good!</p><p>The analysis bar will also reset each time you switch between articles.</p>");
         });
-        instr("<p>Click / tap anywhere on the article besides a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
+        instr("<p>Click / tap anywhere besides on a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
         control();
     }],
     ["tut1_scroll", function() {
@@ -574,15 +576,15 @@ procedure = new Procedure(new Map([
 $(document).ready(function() {
     procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
-    //     $(this).load("articles/tut1.php", { "index": index }, () => {
+    //     $(this).load("articles/tut1.php", () => {
     //         if (cond.sd == 2) prepareSD_S();
     //         if (cond.wd_lre) prepareWD_LRE();
-    //         $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
+    //         // $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
+    //         adContent(null);
+    //         unblock();
+    //         procedure.go("tut1_end");
     //     });
     // });
-    // adContent(null);
-    // unblock();
-    // procedure.go("survey_end");
 });
 
 /* TO DO:
