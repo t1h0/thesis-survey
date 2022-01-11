@@ -38,7 +38,7 @@ header {
     font-size: 1.1em;
 }
 
-#article-container {
+#article {
     line-height: 1.7em !important;
 }
 
@@ -55,6 +55,7 @@ main {
     background-color: #fff;
     padding-bottom: 25vh;
     transition: padding-bottom 1s;
+    min-height: 100vh;
 }
 
 
@@ -140,17 +141,9 @@ main {
 }
 
 
-/* .blocker {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    z-index: 2000;
-    background-color: black;
-    opacity: 0.3;
-}
+/* Task 2 */
 
-#transparentBlocker {
-    z-index: 4000 !important;
-} */
+.s,
+.w {
+    cursor: pointer;
+}

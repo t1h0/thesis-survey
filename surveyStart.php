@@ -1,6 +1,7 @@
 <?php
 
-function getArticles(){
+function getArticles()
+{
     $dirs = ["left", "center", "right", "left alt", "center alt", "right alt"];
     $files = ["low", "middle", "high"];
 
@@ -20,7 +21,7 @@ function getArticles(){
     while (($articleB_file = random_int(0, 2)) == $articleA_file);
 
     // convert to actual article characteristics
-    return array(array($dirs[$articleA_ind],$files[$articleA_file]),array($dirs[$articleB_ind],$files[$articleB_file]));
+    return array(array($dirs[$articleA_ind], $files[$articleA_file]), array($dirs[$articleB_ind], $files[$articleB_file]));
 }
 
 
@@ -32,17 +33,26 @@ $_SESSION["sessionid"] = $_GET["sessionid"];
 
 if (isset($_GET["test"])) {
     $_SESSION["test"] = true;
-    $_SESSION["cond"] = [
-        "wd_lr" => ($temp = true),
-        "wd_e" => ($temp2 = true),
-        "wd_lre" => $temp || $temp2,
-        "wd" => true,
-        "sd" => 2
-    ];
+    if (isset($_GET["t"]) && gettype($_GET["t"]) == "integer" && $_GET["t"] >= 1 && $_GET["t"] <= 24) {
+        $_SESSION["cond"] = [
+            "wd_lr" => $_GET["t"] >= 13,
+            "wd_e" => $_GET["t"] % 2 == 0,
+            "wd_lre" => $_GET["t"] >= 13 && $_GET["t"] % 2 == 0,
+            "wd" => ($_GET["t"] >= 7 && $_GET["t"] <= 12) || ($_GET["t"] >= 19 && $_GET["t"] <= 24),
+            "sd" => in_array($_GET["t"], [1, 2, 7, 8, 13, 14, 19, 20]) ? 0 : (in_array($_GET["t"], [3, 4, 9, 10, 15, 16, 21, 22]) ? 1 : 2),
+        ];
+    } else {
+        $_SESSION["cond"] = [
+            "wd_lr" => ($temp = true),
+            "wd_e" => ($temp2 = true),
+            "wd_lre" => $temp || $temp2,
+            "wd" => true,
+            "sd" => 2
+        ];
+    }
     $_SESSION["step"] = 0;
     $_SESSION["articles"] = getArticles();
-}
-else {
+} else {
     $_SESSION["test"] = false;
 
     try {
@@ -61,18 +71,18 @@ else {
             }
             $cond = $result["cond"];
             $_SESSION["step"] = $result["step"];
-            $_SESSION["articles"] = array([$result["articleA_pol"],$result["articleA_bias"]],[$result["articleB_pol"],$result["articleB_bias"]]);
+            $_SESSION["articles"] = array([$result["articleA_pol"], $result["articleA_bias"]], [$result["articleB_pol"], $result["articleB_bias"]]);
         } else {
             // selecting articles
             $_SESSION["articles"] = getArticles();
-            
+
             $conn->beginTransaction();
             $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 24) THEN latest_cond + 1 ELSE 1 END")->execute();
             $sql = $conn->prepare("SELECT * FROM Manager");
             $sql->execute();
             $cond = $sql->fetch()["latest_cond"];
             $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,step,articleA_pol,articleA_bias,articleB_pol,articleB_bias) VALUES (?,?,?,$cond,?,?,?,?,?)");
-            $values = array_merge(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"],0),$_SESSION["articles"][0],$_SESSION["articles"][1]);
+            $values = array_merge(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"], 0), $_SESSION["articles"][0], $_SESSION["articles"][1]);
             $sql->execute($values);
             $conn->commit();
             $_SESSION["step"] = 0;
@@ -82,7 +92,7 @@ else {
             "wd_e" => $cond % 2 == 0,
             "wd_lre" => $cond >= 13 && $cond % 2 == 0,
             "wd" => ($cond >= 7 && $cond <= 12) || ($cond >= 19 && $cond <= 24),
-            "sd" => in_array($cond,[1,2,7,8,13,14,19,20]) ? 0 : (in_array($cond,[3,4,9,10,15,16,21,22]) ? 1 : 2),
+            "sd" => in_array($cond, [1, 2, 7, 8, 13, 14, 19, 20]) ? 0 : (in_array($cond, [3, 4, 9, 10, 15, 16, 21, 22]) ? 1 : 2),
         ];
     } catch (PDOException $e) {
         echo "Error: $e";

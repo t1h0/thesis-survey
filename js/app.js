@@ -69,6 +69,21 @@ function prepareWD_LRE() {
     });
 };
 
+// task2
+
+function prepareTask2() {
+    $(".s").dblclick(function() { // on doubleclick on sentence
+        $(this).toggleClass("sd");
+        sentence = $(this);
+        $(this).find("span").each(function() {
+            $(this).removeClass("wd");
+            if (sentence.hasClass("sd")) {
+                $(this).on("click.active", function() { $(this).toggleClass("wd") });
+            } else $(this).off("click.active");
+        });
+    });
+}
+
 // SQL
 
 function logSql(data_raw, callback = () => {}) {
@@ -156,8 +171,8 @@ class Procedure {
         this.keys = [...this.proc.keys()];
     };
 
-    go(toState, insert = false) {
-        control("Continue");
+    go(toState, controlReset = true, insert = false) {
+        if (controlReset) control("Continue");
         switch (typeof(toState)) {
             case "number":
                 if (!insert) this.state = toState;
@@ -282,19 +297,19 @@ procedure = new Procedure(new Map([
         });
         instr("Please answer the question above.");
     }],
-    ["mediabias_instruction", function() {
-        adContent(`<div class='col'><h2>Instruction</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
-        instr("Please read the full instructions above.");
-        control("Continue", null, appLoad);
-    }],
-    ["tut1_start", function() {
+    ["task1_instruction", function() {
         $(".carousel-item").each(function(index) {
-            $(this).load("articles/tut1.php", { "index": index }, () => {
+            $(this).load("articles/tut1.php", () => {
                 if (cond.sd == 2) prepareSD_S();
                 if (cond.wd_lre) prepareWD_LRE();
                 $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
             });
         });
+        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
+        instr("Please read the full instructions above.");
+        control("Continue", null, appLoad);
+    }],
+    ["tut1_start", function() {
         adContent(null);
         block();
         instr("You are now going to learn about the functionality of this app before you will actually use it.");
@@ -352,12 +367,12 @@ procedure = new Procedure(new Map([
         control();
         unblock($("main"), false);
         $("#reader-control").removeClass("actionBlock");
-        $(".article-navigator").on("click.temp", () => procedure.go());
-        instr("<p>To switch between two articles, click on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
-    }],
-    ["tut1_articleSwitch_success", function() {
-        $(".article-navigator").off("click.temp");
-        instr("Very good!");
+        $(".article-navigator").on("click.temp", () => {
+            $(".article-navigator").off("click.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+        instr("<p>To switch between two articles, click / tap on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
     }],
     ["tut1_analysisBar", function() {
         if (cond.wd_lre || cond.sd == 2) {
@@ -368,14 +383,15 @@ procedure = new Procedure(new Map([
     ["tut1_clickOnSentence", function() {
         if (cond.sd == 2) {
             unblock();
-            $(".sd").on("click.temp", () => procedure.go());
-            instr("<p>If you click on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
+            $(".sd").on("click.temp", () => {
+                $(".sd").off("click.temp");
+                console.log("ja");
+                control("Continue");
+                instr("Very good!");
+            });
+            instr("<p>If you click / tap on a biased sentence (highlighted with a gray background), the helper system will provide you with additional information about the sentence.</p><p>Try it!</p>");
             control();
         } else procedure.go("tut1_clickOnPhrase");
-    }],
-    ["tut1_clickOnSentence_success", function() {
-        $(".sd").off("click.temp");
-        instr("Very good!");
     }],
     ["tut1_sd_s", function() {
         instr("<p>The <span class='fst-italic'>Synonyms Field</span> shows you an alternative sentence with the same meaning as the selected sentence but neutral in its nature.</p>")
@@ -385,14 +401,14 @@ procedure = new Procedure(new Map([
         $(".app-show-highlight").removeClass("app-show-highlight");
         if (cond.wd_lre) {
             unblock();
-            $(".wd_lre").on("click.temp", () => procedure.go());
-            instr("<p>If you click on a feature phrase (highlighted with a <span class='wd_lre'>dotted</span> " + (cond.wd ? "or <span class='wd wd_lre'>dashed</span>" : "") + " underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
+            $(".wd_lre").on("click.temp", () => {
+                $(".wd_lre").off("click.temp");
+                control("Continue");
+                instr("Very good!");
+            });
+            instr("<p>If you click / tap on a feature phrase (highlighted with a <span class='wd_lre'>dotted</span> " + (cond.wd ? "or <span class='wd wd_lre'>dashed</span>" : "") + " underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
             control();
         } else procedure.go("tut1_clickAnywhere");
-    }],
-    ["tut1_clickOnPhrase_success", function() {
-        $(".wd_lre").off("click.temp");
-        instr("Very good!");
     }],
     ["tut1_wd_lr", function() {
         if (cond.wd_lr) {
@@ -410,27 +426,22 @@ procedure = new Procedure(new Map([
     ["tut1_clickAnywhere", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
         unblock();
-        $(".article-navigator, main").on("click.temp", () => procedure.go());
-        senphrase = [];
-        if (cond.sd == 2) senphrase.push("sentence");
-        if (cond.wd_lr || cond.wd_e) senphrase.push("phrase");
-        senphrase = senphrase.join(" / ");
-        instr("<p>Click anywhere on the article besides a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
+        $(".article-navigator, main").on("click.temp", () => {
+            $(".article-navigator, main").off("click.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+        instr("<p>Click / tap anywhere on the article besides a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " or switch to the other article and the analysis bar will reset.</p><p>Try it!</p>");
         control();
-    }],
-    ["tut1_clickAnywhere_success", function() {
-        $(".article-navigator, main").off("click.temp");
-        instr("Very good!");
     }],
     ["tut1_scroll", function() {
         unblock();
         control();
         instr("<p>Finally, to continue reading and see the full article, scroll up and down on your device.</p><p>Try it!</p>");
-        $(window).on("scroll.temp", () => procedure.go());
-    }],
-    ["tut1_scroll_success", function() {
-        instr("Very good!");
-        $(window).off("scroll.temp");
+        $(window).one("scroll", () => {
+            control("Continue");
+            instr("Very good!");
+        });
     }],
     ["tut1_end", function() {
         instr("<p>Please take some time now to get familiar with the app. Once you're finished, press Start to begin your duty as chief-editor.");
@@ -446,7 +457,7 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
     }],
     ["task1_read", function() {
-        instr(`<p>Please read both articles and then click 'Continue' to choose, which article uses the most neutral language.</p>`);
+        instr(`<p>Please read both articles and then click / tap 'Continue' to choose, which article uses the most neutral language.</p>`);
         $("#app-button").prop("disabled", true);
         $(".article-navigator").on("click.temp", () => {
             $(".article-navigator").off("click.temp");
@@ -469,38 +480,109 @@ procedure = new Procedure(new Map([
                 </label>
             </div>
         </form>`);
-        control(undefined, `<input id="submitbtn" type="submit" form="article_choice" class="button btn" value="Continue"/>`);
+        control(undefined, `<input id="submitbtn" type="submit" form="article_choice" class="button btn" value="Submit"/>`);
         $("#article_choice").submit(function() {
             logSql({
                 "article_choice": $("input:radio[name=article]:checked").val()
-            }, appLoad);
+            }, () => procedure.go());
             return false;
         });
     }],
-    ["tut2_start", function() {
+    ["task2_instruction", function() {
+        adContent(`<div class='col'><h2>Second Task</h2><p class="mt-3">We now ask you to go a step further and annotate, which sentences and phrases you perceive to be biased. To do so, you will again first learn how to annotate in the app. Afterward, you will read and annotate another article by one of your reporters about a different topic.</div>`);
         $("#article-column").empty();
-        $("#article-column").load("articles/task2.php", { "index": 0 }, () => {});
-        block();
+        $("#article-column").load("articles/tut2.php", () => {
+            prepareTask2();
+        });
         $("header").empty();
         $("header").css({ "height": "0.5rem" });
+        instr("Please read the full instructions above.");
+        control("Continue", null, appLoad);
+    }],
+    ["tut2_start", function() {
+        adContent(null);
+        instr("This time, the app only contains one article. It is therefore missing a control bar on top.");
+    }],
+    ["tut2_clickSentence", function() {
+        instr("<p>To annotate a sentence as biased, double click / double tap any sentence.</p><p>Try it!</p>");
+        control();
+        $(".s").one("dblclick.temp", () => {
+            $(".s").off("dblclick.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+    }],
+    ["tut2_clickPhrase", function() {
+        instr("<p>After having annotated a sentence as biased, you can annotate specific words within the same sentence as biased with a simple click / tap.</p><p>Try it!</p>");
+        control();
+        $(".sd").children().on("click.temp", () => {
+            $(".sd").children().off("click.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+    }],
+    ["tut2_phraseInfo", function() {
+        instr("<p>If a phrase you deem biased contains more than one word, simply click / tap all words contained in the phrase.</p>");
+    }],
+    ["tut2_removeAnnotation", function() {
+        instr("<p>To remove an annotation, repeat the prior action. I.e., click / tap a word again or double click / double tap a sentence again. If you remove the annotation of a biased sentence, any annotations for words contained in that sentence will be removed as well.</p><p>Try to remove an annotation now!</p>");
+        control();
+        $(".sd").one("dblclick.temp", () => {
+            $(".sd").off("dblclick.temp");
+            $(".wd").off("click.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+        $(".wd").one("click.temp", () => {
+            $(".sd").off("dblclick.temp");
+            $(".wd").off("click.temp");
+            control("Continue");
+            instr("Very good!");
+        });
+    }],
+    ["tut2_end", function() {
+        instr("<p>Please take some time now to get familiar with annotating inside the app. Once you're finished, press Start to continue your duty as chief-editor.");
+        control("Start", null, appLoad);
+    }],
+    ["task2_start", function() {
+        $("#article-column").empty();
+        $("#article-column").load("articles/task2.php", () => {
+            prepareTask2();
+        });
+        instr("<p>This article was written by one of your reporters about the <span class='fst-italic'>James Webb Space Telescope</span>.</p>");
+    }],
+    ["task1_choice", function() {
+        instr(`<p>Please read the article and annotate any sentences and phrases you perceive to be biased like trained before. Once you're finished, click / tap the button below to submit your annotations.</p>`);
+        control("Submit", undefined, () => {
+            sentences = "";
+            words = "";
+            $(".sd").each(function() { sentences += $(this).attr("sdid") + "," });
+            $(".wd").each(function() { sentences += $(this).attr("wdid") + "," });
+            logSql({
+                "sentences_choice": sentences.slice(0, -1),
+                "words_choice": words.slice(0, -1)
+            }, () => procedure.go());
+        })
     }],
     ["survey_end", function() {
-        return;
+        adContent(`<div class='col'><h2>Thank you!</h2><p class="mt-3">Thank you for participating in this survey. Click here to get back to prolific: <a href="#">https://</a></div>`);
+        instr("");
+        control();
     }]
 ]));
 
 $(document).ready(function() {
-    // procedure.go(step_start);
-    // tut1_articles = ["articles/tut1/1.html", "articles/tut1/1.html"];
+    procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
-    //     $(this).load(tut1_articles[index], () => {
+    //     $(this).load("articles/tut1.php", { "index": index }, () => {
     //         if (cond.sd == 2) prepareSD_S();
     //         if (cond.wd_lre) prepareWD_LRE();
+    //         $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
     //     });
     // });
-    adContent(null);
-    unblock();
-    procedure.go("tut2_start");
+    // adContent(null);
+    // unblock();
+    // procedure.go("survey_end");
 });
 
 /* TO DO:
