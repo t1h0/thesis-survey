@@ -15,7 +15,7 @@ foreach($_POST as $k => $v){
 array_push($values,$_SESSION["pid"]);
 $update = substr($update,0,strlen($update)-1);
 // Create connection
-$conn = new PDO("mysql:host=$servername;dbname=mb", $username, $password);
+$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 try {
   $conn->prepare("UPDATE $target_table SET $update WHERE pid = ?")->execute($values);
   echo 1;
