@@ -2,26 +2,26 @@
 
 function getArticles()
 {
-    $dirs = ["left", "center", "right", "left alt", "center alt", "right alt"];
-    $files = ["low", "middle", "high"];
+    $pol = ["left", "center", "right", "left_alt", "center_alt", "right_alt"];
+    $bias = ["l", "m", "h"];
 
     // choosing article stance at random (0+3 left,1+4 center,2+5 right)
-    $articleA_ind = random_int(0, 2);
-    $articleB_ind = random_int(0, 2);
-    if ($articleA_ind == $articleB_ind) { // will both articles have the same political stance?
+    $articleA_polInd = random_int(0, 2);
+    $articleB_polInd = random_int(0, 2);
+    if ($articleA_polInd == $articleB_polInd) { // will both articles have the same political stance?
         if (random_int(0, 1) == 0) { //randomly change one of the articles to alternative article
-            $articleA_ind += 3;
+            $articleA_polInd += 3;
         } else {
-            $articleB_ind += 3;
+            $articleB_polInd += 3;
         }
     }
 
     // define bias level for each article at random
-    $articleA_file = random_int(0, 2);
-    while (($articleB_file = random_int(0, 2)) == $articleA_file);
+    $articleA_biasInd = random_int(0, 2);
+    while (($articleB_biasInd = random_int(0, 2)) == $articleA_biasInd);
 
     // convert to actual article characteristics
-    return array(array($dirs[$articleA_ind], $files[$articleA_file]), array($dirs[$articleB_ind], $files[$articleB_file]));
+    return array(array($pol[$articleA_polInd], $bias[$articleA_biasInd]), array($pol[$articleB_polInd], $bias[$articleB_biasInd]));
 }
 
 

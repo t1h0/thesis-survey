@@ -1,4 +1,3 @@
 <?php
 session_start();
-// include("task1/".$_SESSION["articles"][$_POST][0]."/".$_SESSION["articles"][$_POST][1].".php");
-include("tut1/0.php");
+include("task1/".$_SESSION["articles"][$_POST["index"]][0].".php");

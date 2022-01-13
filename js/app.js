@@ -173,23 +173,29 @@ class Procedure {
         this.keys = [...this.proc.keys()];
     };
 
-    go(toState, controlReset = true, insert = false) {
+    go(toState, controlReset = true) {
         if (controlReset) control("Continue");
         switch (typeof(toState)) {
             case "number":
-                if (!insert) this.state = toState;
-                this.proc.get(this.keys[toState])();
+                this.state = toState;
+                logSql({ "step": this.state }, () => {
+                    this.proc.get(this.keys[toState])();
+                });
                 break;
             case "string":
                 this.state = this.keys.indexOf(toState);
-                this.proc.get(toState)();
+                logSql({ "step": this.state }, () => {
+                    this.proc.get(toState)();
+                });
                 break;
             default:
                 if (typeof(this.state) !== "undefined") this.state++;
                 else {
                     this.state = 0;
                 };
-                this.proc.get(this.keys[this.state])();
+                logSql({ "step": this.state }, () => {
+                    this.proc.get(this.keys[this.state])();
+                });
         };
     };
 
@@ -300,7 +306,7 @@ procedure = new Procedure(new Map([
         });
         instr("Please answer the question above.");
     }],
-    ["task1_instruction", function() {
+    ["task1_instructions", function() {
         $(".carousel-item").each(function(index) {
             $(this).load("articles/tut1.php", () => {
                 if (cond.sd == 2) prepareSD_S();
@@ -308,7 +314,7 @@ procedure = new Procedure(new Map([
                 $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
             });
         });
-        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</div>`);
+        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</p><p style="fw-bold">From now on, you will get instructions at the bottom of the page.</p></div>`);
         instr("Please fully read the instructions above.");
         control("Continue", null, appLoad);
     }],
@@ -490,7 +496,7 @@ procedure = new Procedure(new Map([
             return false;
         });
     }],
-    ["task2_instruction", function() {
+    ["task2_instructions", function() {
         adContent(`<div class='col'><h2>Second Task</h2><p class="mt-3">We now ask you to go a step further and annotate, which sentences and phrases you perceive to be biased. To do so, you will again first learn how to annotate in the app. Afterward, you will read and annotate another article by one of your reporters about a different topic.</div>`);
         $("#article-column").empty();
         $("#article-column").load("articles/tut2.php", () => {
@@ -582,7 +588,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    //         procedure.go("tut1_end");
+    // procedure.go("task1_instructions");
     //     });
     // });
 });
