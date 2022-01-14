@@ -36,16 +36,12 @@ if (isset($_GET["test"])) {
     if (isset($_GET["t"]) && gettype($_GET["t"]) == "integer" && $_GET["t"] >= 1 && $_GET["t"] <= 24) {
         $_SESSION["cond"] = [
             "wd_lr" => $_GET["t"] >= 13,
-            "wd_e" => $_GET["t"] % 2 == 0,
-            "wd_lre" => $_GET["t"] >= 13 && $_GET["t"] % 2 == 0,
             "wd" => ($_GET["t"] >= 7 && $_GET["t"] <= 12) || ($_GET["t"] >= 19 && $_GET["t"] <= 24),
             "sd" => in_array($_GET["t"], [1, 2, 7, 8, 13, 14, 19, 20]) ? 0 : (in_array($_GET["t"], [3, 4, 9, 10, 15, 16, 21, 22]) ? 1 : 2),
         ];
     } else {
         $_SESSION["cond"] = [
             "wd_lr" => ($temp = true),
-            "wd_e" => ($temp2 = true),
-            "wd_lre" => $temp || $temp2,
             "wd" => true,
             "sd" => 2
         ];
@@ -88,11 +84,9 @@ if (isset($_GET["test"])) {
             $_SESSION["step"] = 0;
         }
         $_SESSION["cond"] = [
-            "wd_lr" => $cond >= 13,
-            "wd_e" => $cond % 2 == 0,
-            "wd_lre" => $cond >= 13 && $cond % 2 == 0,
-            "wd" => ($cond >= 7 && $cond <= 12) || ($cond >= 19 && $cond <= 24),
-            "sd" => in_array($cond, [1, 2, 7, 8, 13, 14, 19, 20]) ? 0 : (in_array($cond, [3, 4, 9, 10, 15, 16, 21, 22]) ? 1 : 2),
+            "wd_lr" => $cond >= 7,
+            "wd" => ($cond >= 4 && $cond <= 6) || ($cond >= 10 && $cond <= 12),
+            "sd" => in_array($cond, [1, 7, 4, 10]) ? 0 : (in_array($cond, [2,8,5,11]) ? 1 : 2),
         ];
     } catch (PDOException $e) {
         echo "Error: $e";

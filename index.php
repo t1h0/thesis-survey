@@ -15,8 +15,8 @@ include("surveyStart.php");
         echo '<link rel="stylesheet" href="css/analysis-bar.css">';
     }
     if ($_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd.css">';
-    if ($_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["wd_lr"]) echo '<link rel="stylesheet" href="css/wd_lre.css">';
-    if (($_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["wd_lr"]) && $_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd_and_lre.css">';
+    if ($_SESSION["cond"]["wd_lr"]) echo '<link rel="stylesheet" href="css/wd_lr.css">';
+    if ($_SESSION["cond"]["wd_lr"] && $_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd_and_lr.css">';
     if ($_SESSION["cond"]["sd"] > 0) {
         echo '<link rel="stylesheet" href="css/sd.css">';
         if ($_SESSION["cond"]["sd"] == 2) echo '<link rel="stylesheet" href="css/sd_s.css">';
@@ -46,13 +46,11 @@ include("surveyStart.php");
             </div>
         </div>
         <?php
-        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]) {
+        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd_s"]) {
             echo '<div class="row justify-content-around mt-0 ui" id="analysis-bar">
           ';
-            foreach (["wd_lr", "wd_e"] as $i) {
-                if ($_SESSION["cond"][$i] == 1) {
-                    include("s/" . $i . ".html");
-                }
+            if ($_SESSION["cond"]["wd_lr"] == true) {
+                include("s/wd_lr.html");
             };
             if($_SESSION["cond"]["sd"] == 2) include("s/sd_s.html");
             echo "</div>

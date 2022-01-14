@@ -30,44 +30,40 @@ function prepareSD_S() {
         e.stopPropagation(); // to prevent immediate automatic click on main
 
         $(".sd-active").removeClass("sd-active");
-        if (!$(this).children(".wd_lre-active").length) resetWords();
+        if (!$(this).children(".wd_lr-active").length) resetWords();
 
         $(this).addClass("sd-active"); // activating clicked sentence (this)
         $("#sd_s").text($(this).attr("sd_s"));
     });
 };
 
-// wd_lre
+// wd_lr
 
 function resetWords() {
     // deactivate word
-    $(".wd_lre-active").removeClass("wd_lre-active");
+    $(".wd_lr-active").removeClass("wd_lr-active");
     // reset sliders
-    ["wd_lr", "wd_e"].forEach(function(i) {
-        if (cond[i]) { // cond contains the php variables and is provided by index.php!
-            $("#" + i).css("margin-left", "calc(50% - 0.5em");
-        }
-    });
+    if (cond.wd_lr) { // cond contains the php variables and is provided by index.php!
+        $("#wd_lr").css("margin-left", "calc(50% - 0.5em");
+    }
 }
 
-function prepareWD_LRE() {
+function prepareWD_LR() {
     $(".article-navigator").click(resetWords);
     $("main").click(resetWords);
-    $(".wd_lre").click(function(e) { // assigning click function to detected words
+    $(".wd_lr").click(function(e) { // assigning click function to detected words
         if (cond.sd != 2 || !$(this).parents().first().hasClass("sd")) {
             e.stopPropagation(); // to prevent immediate automatic click on main
         }
 
         //deactivating potential previous active word or sentence
-        $(".wd_lre-active").removeClass("wd_lre-active");
+        $(".wd_lr-active").removeClass("wd_lr-active");
         resetSentences();
 
-        $(this).addClass("wd_lre-active"); // activating clicked word (this)
-        ["wd_lr", "wd_e"].forEach((i) => {
-            if (cond[i]) {
-                $("#" + i).css("margin-left", "calc(" + $(".wd_lre-active").attr(i) + "% - 0.5em"); //setting sliders to respective attribute values
-            }
-        });
+        $(this).addClass("wd_lr-active"); // activating clicked word (this)
+        if (cond.wd_lr) {
+            $("#wd_lr").css("margin-left", "calc(" + $(".wd_lr-active").attr("wd_lr") + "% - 0.5em"); //setting sliders to respective attribute values
+        }
     });
 };
 
@@ -310,11 +306,11 @@ procedure = new Procedure(new Map([
         $(".carousel-item").each(function(index) {
             $(this).load("articles/tut1.php", () => {
                 if (cond.sd == 2) prepareSD_S();
-                if (cond.wd_lre) prepareWD_LRE();
-                $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
+                if (cond.wd_lr) prepareWD_LR();
+                $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
             });
         });
-        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lre ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar ` + (cond.wd_lr ? (cond.wd_e ? `political / establishment` : `political`) : `establishment`) + ` stance.</p>` : ``) + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</p><p style="fw-bold">From now on, you will get instructions at the bottom of the page.</p></div>`);
+        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lr ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar political stance</p>` : "") + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</p><p style="fw-bold">From now on, you will get instructions at the bottom of the page.</p></div>`);
         instr("Please fully read the instructions above.");
         control("Continue", null, appLoad);
     }],
@@ -328,7 +324,7 @@ procedure = new Procedure(new Map([
         instr("You see the currently selected article in the app's main section.");
     }],
     ["tut1_sdwd", function() {
-        if (cond.sd > 0 || cond.wd || cond.wd_lre) {
+        if (cond.sd > 0 || cond.wd || cond.wd_lr) {
             instr("The app includes a helper system which provides support in detecting bias in news articles.")
             return;
         }
@@ -344,7 +340,7 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_wd", function() {
         if (cond.wd) { //word detection active?
-            if (cond.wd_lre) $(".wd").not(".wd_lre").removeClass("wdsd-hidden");
+            if (cond.wd_lr) $(".wd").not(".wd_lr").removeClass("wdsd-hidden");
             else $(".wd").removeClass("wdsd-hidden");
             instr("<p>Our system highlights phrases with a <span class='wd'>solid</span> underline, if it detects them as biased. A biased phrase is a phrase, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>");
             return;
@@ -352,18 +348,18 @@ procedure = new Procedure(new Map([
         procedure.go();
     }],
     ["tut1_wdlre", function() {
-        if (cond.wd_lre) { // feature word detection active?
-            if (cond.wd) $(".wd_lre").not(".wd").removeClass("wdsd-hidden");
-            else $(".wd_lre").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd_lre'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is distinctive for reports by newspapers sharing a certain " + (cond.wd_lr ? (cond.wd_e ? "political / establishment" : "political") : "establishment") + " stance.</p>");
+        if (cond.wd_lr) { // feature word detection active?
+            if (cond.wd) $(".wd_lr").not(".wd").removeClass("wdsd-hidden");
+            else $(".wd_lr").removeClass("wdsd-hidden");
+            instr("<p>Our system highlights phrases with a <span class='wd_lr'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is distinctive for reports by newspapers sharing a certain political stance.</p>");
             return;
         }
         procedure.go();
     }],
     ["tut1_wd_and_lre", function() {
-        if (cond.wd_lre && cond.wd) { // word detection and feature phrase detection active?
-            $(".wd.wd_lre").removeClass("wdsd-hidden");
-            instr("<p>If a feature phrase is also detected to be a biased phrase, it will be highlighted with a <span class='wd wd_lre'>dashed</span> underline.</p>");
+        if (cond.wd_lr && cond.wd) { // word detection and feature phrase detection active?
+            $(".wd.wd_lr").removeClass("wdsd-hidden");
+            instr("<p>If a feature phrase is also detected to be a biased phrase, it will be highlighted with a <span class='wd wd_lr'>dashed</span> underline.</p>");
             return;
         }
         procedure.go();
@@ -384,7 +380,7 @@ procedure = new Procedure(new Map([
         instr("<p>To switch between two articles, click / tap on the arrow buttons in the top left and top right corner.</p><p>Try it!</p>");
     }],
     ["tut1_analysisBar", function() {
-        if (cond.wd_lre || cond.sd == 2) {
+        if (cond.wd_lr || cond.sd == 2) {
             block($("header"));
             instr("Below the reader controls you see the helper system's analysis bar. It provides you with helpful information about how biased or neutral the current article is written.");
         } else procedure.go("tut1_scroll");
@@ -407,14 +403,14 @@ procedure = new Procedure(new Map([
     }],
     ["tut1_clickOnPhrase", function() {
         $(".app-show-highlight").removeClass("app-show-highlight");
-        if (cond.wd_lre) {
+        if (cond.wd_lr) {
             block($("body"), true);
-            $(".wd_lre").on("click.temp", () => {
-                $(".wd_lre").off("click.temp");
+            $(".wd_lr").on("click.temp", () => {
+                $(".wd_lr").off("click.temp");
                 control("Continue");
                 instr("Very good!");
             });
-            instr("<p>If you click / tap on a feature phrase (highlighted with a <span class='wd_lre'>dotted</span> " + (cond.wd ? "or <span class='wd wd_lre'>dashed</span>" : "") + " underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
+            instr("<p>If you click / tap on a feature phrase (highlighted with a <span class='wd_lr'>dotted</span> " + (cond.wd ? "or <span class='wd wd_lr'>dashed</span>" : "") + " underline), the helper system will provide you with additional information about the phrase.</p><p>Try it!</p>");
             control();
         } else procedure.go("tut1_clickAnywhere");
     }],
@@ -422,13 +418,6 @@ procedure = new Procedure(new Map([
         if (cond.wd_lr) {
             instr("<p>The <span class='fst-italic'>Left-Right Stance</span> gives information about the overall political stance of newspapers, that distinctively use the selected feature phrase in articles about the current topic. It ranges from politically left (L) to politically right (R).</p>")
             $("#wd_lr-component").addClass("app-show-highlight");
-        } else procedure.go();
-    }],
-    ["tut1_wd_e", function() {
-        $(".app-show-highlight").removeClass("app-show-highlight");
-        if (cond.wd_e) {
-            instr("<p>The <span class='fst-italic'>Establishment Stance</span> gives information about the overall stance towards establishment of newspapers, that distinctively use the selected phrase in articles about the current topic. It ranges from contra (-) to pro (+) establishment.</p>")
-            $("#wd_e-component").addClass("app-show-highlight");
         } else procedure.go();
     }],
     ["tut1_clickAnywhere", function() {
@@ -439,7 +428,7 @@ procedure = new Procedure(new Map([
             control("Continue");
             instr("<p>Very good!</p><p>The analysis bar will also reset each time you switch between articles.</p>");
         });
-        instr("<p>Click / tap anywhere besides on a " + (cond.sd ? (cond.wd_lre ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
+        instr("<p>Click / tap anywhere besides on a " + (cond.sd ? (cond.wd_lr ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
         control();
     }],
     ["tut1_scroll", function() {
@@ -459,7 +448,7 @@ procedure = new Procedure(new Map([
         $(".carousel-item").each(function(index) {
             $(this).load("articles/task1.php", { "index": index }, () => {
                 if (cond.sd == 2) prepareSD_S();
-                if (cond.wd_lre) prepareWD_LRE();
+                if (cond.wd_lr) prepareWD_LR();
             });
         });
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
@@ -580,15 +569,15 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    // procedure.go(step_start);
+    procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
     //     $(this).load("articles/tut1.php", () => {
     //         if (cond.sd == 2) prepareSD_S();
-    //         if (cond.wd_lre) prepareWD_LRE();
-    //         // $(".sd, .wd, .wd_lre").addClass("wdsd-hidden");
+    //         if (cond.wd_lr) prepareWD_LR();
+    //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    procedure.go("task1_instructions");
+    // procedure.go("task1_instructions");
     //     });
     // });
 });
