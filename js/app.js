@@ -508,7 +508,6 @@ procedure = new Procedure(new Map([
         control();
         $(".s").one("dblclick.temp", () => {
             $(".s").off("dblclick.temp").off("dblclick");
-            block($("main, header"));
             control("Continue");
             instr("Very good!");
         });
