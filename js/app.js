@@ -245,7 +245,7 @@ procedure = new Procedure(new Map([
             </div>
             <div class="col-12">
                 <h4>What is your age?</h4>
-                <input class="col-12 form-control form-control-lg mt-4" type="number" step=1 id="age" placeholder="Please state your age.." required>
+                <input class="col-12 form-control form-control-lg mt-4" type="number" step=1 id="age" min=18 placeholder="Please state your age.." required>
             </div>
             <div class="col-12">
                 <h4>What is the highest level of schooling you have completed?</h4>
@@ -431,7 +431,7 @@ procedure = new Procedure(new Map([
             control("Continue");
             instr("<p>Very good!</p><p>The analysis bar will also reset each time you switch between articles.</p>");
         });
-        instr("<p>Click / tap anywhere besides on a " + (cond.sd > 0 ? (cond.wd_lr ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
+        instr("<p>Click / tap anywhere besides on a " + (cond.sd == 2 ? (cond.wd_lr ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
         control();
     }],
     ["tut1_scroll", function() {
@@ -457,7 +457,7 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
     }],
     ["task1_read", function() {
-        instr(`<p>Please read both articles. Afterward you will choose, which article uses the most neutral language.</p>` + ((cond.wd || cond.sd > 0 || cond.wd_lr) ? (`<p>Remember: ` + (cond.sd ? `<span class="sd me-2">Biased Sentence</span>` : "") + (cond.wd ? `<span class="wd me-2">Biased Word</span>` : "") + (cond.wd_lr ? `<span class="wd_lr me-2">Feature Word</span>` : "") + ((cond.wd_lr && cond.wd) ? `<span class="wd wd_lr me-2">Biased Feature Word</span>` : "")) : ``));
+        instr(`<p>Please read both articles. Afterward you will choose, which article uses the most neutral language.</p>` + ((cond.wd || cond.sd > 0 || cond.wd_lr) ? (`<p>Remember: ` + (cond.sd > 0 ? `<span class="sd me-2">Biased Sentence</span>` : "") + (cond.wd ? `<span class="wd me-2">Biased Word</span>` : "") + (cond.wd_lr ? `<span class="wd_lr me-2">Feature Word</span>` : "") + ((cond.wd_lr && cond.wd) ? `<span class="wd wd_lr me-2">Biased Feature Word</span>` : "")) : ``));
         $("#app-button").prop("disabled", true);
         $(".article-navigator").on("click.temp", () => {
             $(".article-navigator").off("click.temp");
@@ -585,7 +585,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    // procedure.go("task2_instructions");
+    // procedure.go("task1_instructions");
     //     });
     // });
 });

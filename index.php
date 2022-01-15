@@ -46,7 +46,7 @@ include("surveyStart.php");
             </div>
         </div>
         <?php
-        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd_s"]) {
+        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd"] == 2) {
             echo '<div class="row justify-content-around mt-0 ui" id="analysis-bar">
           ';
             if ($_SESSION["cond"]["wd_lr"] == true) {
@@ -89,7 +89,7 @@ include("surveyStart.php");
     <script src="js/ui.js"></script>
     <script type="text/javascript">
         cond = <?php echo json_encode($_SESSION["cond"]); ?>;
-        testmode = <?php echo json_encode($_SESSION["test"]) ?>;
+        testmode = <?php echo json_encode($_SESSION["test"] || $_SESSION["test"]) ?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
     <script src="js/app.js"></script>
