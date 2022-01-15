@@ -89,7 +89,7 @@ include("surveyStart.php");
     <script src="js/ui.js"></script>
     <script type="text/javascript">
         cond = <?php echo json_encode($_SESSION["cond"]); ?>;
-        testmode = <?php echo json_encode($_SESSION["test"] || $_SESSION["preview"]) ?>;
+        testmode = <?php echo json_encode($_SESSION["test"]) ?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
     <script src="js/app.js"></script>

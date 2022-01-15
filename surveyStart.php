@@ -31,7 +31,7 @@ $_SESSION["pid"] = $_GET["pid"];
 $_SESSION["studyid"] = $_GET["studyid"];
 $_SESSION["sessionid"] = $_GET["sessionid"];
 
-if (isset($_GET["test"])) {
+if (isset($_GET["test"]) || (isset($_GET["preview"]) && $_GET["preview"])) {
     $_SESSION["test"] = true;
     if (isset($_GET["t"]) && (int) $_GET["t"] >= 1 && (int) $_GET["t"] <= 12) {
         $_SESSION["cond"] = [
