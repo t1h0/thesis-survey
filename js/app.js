@@ -455,7 +455,7 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
     }],
     ["task1_read", function() {
-        instr(`<p>Please read both articles. Afterward you will choose, which article uses the most neutral language.</p>` + ((cond.wd || cond.sd > 0 || cond.wd_lr) ? (`<p>Remember: ` + (cond.sd ? `<span class="sd me-2">Biased Sentence</span>` : "") + (cond.wd ? `<span class="wd me-2">Biased Word</span>` : "") + (cond.wd_lr ? `<span class="wd_lr me-2">Feature Word</span>` : "") + (cond.wd_lr ? `<span class="wd wd_lr me-2">Biased Feature Word</span>` : "")) : ``));
+        instr(`<p>Please read both articles. Afterward you will choose, which article uses the most neutral language.</p>` + ((cond.wd || cond.sd > 0 || cond.wd_lr) ? (`<p>Remember: ` + (cond.sd ? `<span class="sd me-2">Biased Sentence</span>` : "") + (cond.wd ? `<span class="wd me-2">Biased Word</span>` : "") + (cond.wd_lr ? `<span class="wd_lr me-2">Feature Word</span>` : "") + ((cond.wd_lr && cond.wd) ? `<span class="wd wd_lr me-2">Biased Feature Word</span>` : "")) : ``));
         $("#app-button").prop("disabled", true);
         $(".article-navigator").on("click.temp", () => {
             $(".article-navigator").off("click.temp");
@@ -499,9 +499,11 @@ procedure = new Procedure(new Map([
     }],
     ["tut2_start", function() {
         adContent(null);
+        block($("main, header"));
         instr("This time, the app only contains one article. It is therefore missing a control bar on top.");
     }],
     ["tut2_clickSentence", function() {
+        unblock();
         instr("<p>To annotate a sentence as biased, double click / double tap any sentence.</p><p>Try it!</p>");
         control();
         $(".s").one("dblclick.temp", () => {
@@ -575,7 +577,7 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    procedure.go(step_start);
+    // procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
     //     $(this).load("articles/tut1.php", () => {
     //         if (cond.sd == 2) prepareSD_S();
@@ -583,7 +585,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    // procedure.go("task1_start");
+    procedure.go("task2_instructions");
     //     });
     // });
 });
