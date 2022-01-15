@@ -60,24 +60,18 @@ if (isset($_GET["test"])) {
         $sql = $conn->prepare("SELECT * from Results where pid = ?");
         $sql->execute(array($_SESSION["pid"]));
         if ($sql->rowCount() > 0) {
-            $result = $sql->fetch();
-            if ($result["step"] == "survey_end") {
-                echo "You have already participated in this survey";
+                echo "You have already participated in this survey.";
                 die();
-            }
-            $cond = $result["cond"];
-            $_SESSION["step"] = $result["step"];
-            $_SESSION["articles"] = array([$result["articleA_pol"], $result["articleA_bias"]], [$result["articleB_pol"], $result["articleB_bias"]]);
         } else {
             // selecting articles
             $_SESSION["articles"] = getArticles();
 
             $conn->beginTransaction();
-            $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 24) THEN latest_cond + 1 ELSE 1 END")->execute();
+            $conn->prepare("UPDATE Manager SET latest_cond = CASE WHEN (latest_cond < 12) THEN latest_cond + 1 ELSE 1 END")->execute();
             $sql = $conn->prepare("SELECT * FROM Manager");
             $sql->execute();
             $cond = $sql->fetch()["latest_cond"];
-            $sql = $conn->prepare("INSERT INTO Results (pid,studyid,sessionid,cond,step,articleA_pol,articleA_bias,articleB_pol,articleB_bias) VALUES (?,?,?,$cond,?,?,?,?,?)");
+            $sql = $conn->prepare("INSERT INTO Results (cond,`time`,pid,studyid,sessionid,step,articleA_pol,articleA_bias,articleB_pol,articleB_bias) VALUES ($cond,0,?,?,?,?,?,?,?,?)");
             $values = array_merge(array($_SESSION["pid"], $_SESSION["studyid"], $_SESSION["sessionid"], 0), $_SESSION["articles"][0], $_SESSION["articles"][1]);
             $sql->execute($values);
             $conn->commit();

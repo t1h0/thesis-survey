@@ -70,6 +70,14 @@ function prepareWD_LR() {
 // task2
 
 function prepareTask2() {
+    if (!cond.wd) {
+        $('head').append('<link rel="stylesheet" href="css/wd.css" type="text/css" />');
+        cond.wd = true;
+    }
+    if (cond.sd == 0) {
+        $('head').append('<link rel="stylesheet" href="css/sd.css" type="text/css" />');
+        cond.sd = true;
+    }
     $(".s").dblclick(function() { // on doubleclick on sentence
         $(this).toggleClass("sd");
         sentence = $(this);
@@ -90,20 +98,10 @@ function logSql(data_raw, callback = () => {}) {
         return;
     };
     $("#loading-icon").removeClass("d-none");
-    run = 1;
-    while (run <= 3) {
-        $.post("sqlLog.php", data_raw, (response) => {
-            if (response != 1) {
-                run++;
-            } else {
-                run = 4;
-                $("#loading-icon").addClass("d-none");
-                callback();
-                return;
-            };
-        });
-    };
-    $("body").html("<h1>An error occured!</h1><h5>Please reload the page.</h5>");
+    $.post("sqlLog.php", data_raw, (response) => {
+        $("#loading-icon").addClass("d-none");
+        callback();
+    });
 };
 
 // DOM Manipulation
@@ -203,14 +201,14 @@ procedure = new Procedure(new Map([
         adContent("<div class='col'><h2>Welcome!</h2><p class='mt-3'>Welcome to this study, which takes most people about 15-20 minutes to complete.</p><p>After conscientious completion of this survey, you will receive 2.50 £ as compensation for your efforts. Therefore, please only continue if you can expect to answer questions for 15-20 minutes without interruptions.</p></div>");
     }],
     ["consent", function() {
-        adContent("<div class='col'><h2>Study Information</h2><p>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experienced in everyday life.</p><p>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or teated during the course of this study.</p></div>");
+        adContent("<div class='col'><h2>Study Information</h2><p>You are invited to participate in a research study that is being conducted by a research team at the University of Konstanz, Germany. The purpose of this study is to elicit your personal impression of different news coverage. We also ask you some demographic questions.</p><p>Participating in the research is not anticipated to cause you any disadvantages or discomfort. The potential physical and/or psychological harm or distress will be the same as any experience in everyday life.</p><p>The University of Konstanz is the sponsor for this study. We will use the information that you provide in order to undertake this study and will act as the data controller for this study. This means that we are responsible for looking after your information and using it properly.</p><p>The data that you provide will be only connected to your Prolific ID and anonymised at the earliest point in time. That is, after completion and compensation, the ID will be deleted from the dataset used for scientific analyses. Your anonymised data will only be associated with the demographic information you provided in the beginning of the questionnaire. Access to your anonymized data might be given to other researchers, including researchers from outside the University of Konstanz. Once the study is published, the anonymised data might be made available on a public data repository. Your rights to access, change or move your information are limited, as we need to manage your information in specific ways for the research to be reliable and accurate. Once anonymised, we will not be able to delete your data.</p><p>Participation in the study is voluntary and you can end your participation at any time by closing the survey window. You will only receive compensation for full, conscientious participation.</p><p>If you have any questions or concerns you can contact the head researcher Timo Spinde (timo.spinde@uni-konstanz.de). Please also contact Timo Spinde, in case you wish to complain about any aspect of the way in which you have been approached or treated during the course of this study.</p></div>");
         instr(`
         <p class='fw-bolder'>Declaration of Consent</p>
         <form id='consent_declaration' action="">
             <div class="form-check">
             <input class="form-check-input form-check-lg" type="checkbox" value=1 id="consent" required>
             <label class="form-check-label" for="consent">
-                I have read and I agree with the above information and declare my consent. I also confirm I am 18 years old or older.
+                I have read and I agree with the above information and declare my consent. I also confirm that I am 18 years old or older.
             </label>
             </div>
         </form>`);
@@ -304,13 +302,13 @@ procedure = new Procedure(new Map([
     }],
     ["task1_instructions", function() {
         $(".carousel-item").each(function(index) {
-            $(this).load("articles/tut1.php", () => {
+            $(this).load("articles/tut1.php", { "index": index }, () => {
                 if (cond.sd == 2) prepareSD_S();
                 if (cond.wd_lr) prepareWD_LR();
                 $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
             });
         });
-        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>` + (cond.wd_lr ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is charateristically used by newspapers all sharing the same or a similar political stance</p>` : "") + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</p><p style="fw-bold">From now on, you will get instructions at the bottom of the page.</p></div>`);
+        adContent(`<div class='col'><h2>First Task</h2><p class="mt-3">We now ask you to take over the duties of a newspaper's chief editor. As such, you have to decide which articles will be published. As your newspaper focusses on neutral news coverage, you will have to read articles and decide upon their level of bias.</p><p>Bias in the context of news refers to the usage of non-neutral and unacceptable language resulting in untrustworthy and partisan news reporting. This bias is therefore independent of how true or fake the content actually is. It is merely a form of intentional or unintentional influence of the reader's opinion and attitude towards the content through the use of biased language by the author.</p>` + (cond.wd_lr ? `<p>You will also encounter the concept of <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is distinctively used by newspapers all sharing the same or a similar political stance</p>` : "") + `<p>You will read the the articles in an app, that we specifically designed for news desks. To get familiar with the app, you will first learn how to use it.</p><p class="fw-bold">From now on, you will get instructions at the bottom of the page.</p></div>`);
         instr("Please fully read the instructions above.");
         control("Continue", null, appLoad);
     }],
@@ -331,9 +329,9 @@ procedure = new Procedure(new Map([
         procedure.go();
     }],
     ["tut1_sd", function() {
-        if (cond.sd) { //sentence detection active?
+        if (cond.sd > 0) { //sentence detection active?
             $(".sd").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights sentences with a <span class='sd'>gray background</span>, if it detects them as biased. A biased sentence is a sentence, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>");
+            instr("<p>Our system highlights sentences with a <span class='sd'>gray background</span>, if it detects them as biased. Remember: a biased sentence is a sentence, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the author.</p>");
             return;
         }
         procedure.go();
@@ -342,7 +340,7 @@ procedure = new Procedure(new Map([
         if (cond.wd) { //word detection active?
             if (cond.wd_lr) $(".wd").not(".wd_lr").removeClass("wdsd-hidden");
             else $(".wd").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd'>solid</span> underline, if it detects them as biased. A biased phrase is a phrase, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the journalist.</p>");
+            instr("<p>Our system highlights phrases with a <span class='wd'>solid</span> underline, if it detects them as biased. Remember: a biased phrase is a phrase, that intentionally or unintentionally influences the reader's opinion and attitude towards the content through the use of biased language by the author.</p>");
             return;
         }
         procedure.go();
@@ -351,7 +349,7 @@ procedure = new Procedure(new Map([
         if (cond.wd_lr) { // feature word detection active?
             if (cond.wd) $(".wd_lr").not(".wd").removeClass("wdsd-hidden");
             else $(".wd_lr").removeClass("wdsd-hidden");
-            instr("<p>Our system highlights phrases with a <span class='wd_lr'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. A feature phrase is a phrase, that in the context of the article's topic is distinctive for reports by newspapers sharing a certain political stance.</p>");
+            instr("<p>Our system highlights phrases with a <span class='wd_lr'>dotted</span> underline, if it detects them to be <span class='fst-italic'>feature phrases</span>. Remember: a feature phrase is a phrase, that in the context of the article's topic is distinctive for reports by newspapers sharing a certain political stance.</p>");
             return;
         }
         procedure.go();
@@ -389,6 +387,7 @@ procedure = new Procedure(new Map([
         if (cond.sd == 2) {
             block($("body"), true);
             $(".sd").on("click.temp", () => {
+                block($("main,header"));
                 $(".sd").off("click.temp");
                 control("Continue");
                 instr("Very good!");
@@ -407,6 +406,7 @@ procedure = new Procedure(new Map([
             block($("body"), true);
             $(".wd_lr").on("click.temp", () => {
                 $(".wd_lr").off("click.temp");
+                block($("main, header"));
                 control("Continue");
                 instr("Very good!");
             });
@@ -428,7 +428,7 @@ procedure = new Procedure(new Map([
             control("Continue");
             instr("<p>Very good!</p><p>The analysis bar will also reset each time you switch between articles.</p>");
         });
-        instr("<p>Click / tap anywhere besides on a " + (cond.sd ? (cond.wd_lr ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
+        instr("<p>Click / tap anywhere besides on a " + (cond.sd > 0 ? (cond.wd_lr ? "biased sentence or a feature word" : "biased sentence") : "feature word") + " and the analysis bar will reset.</p><p>Try it!</p>");
         control();
     }],
     ["tut1_scroll", function() {
@@ -454,7 +454,7 @@ procedure = new Procedure(new Map([
         instr("<p>Article A and article B are now two articles, written by reporters of your newspaper about the <span class='fst-italic'>Kyle Rittenhouse</span> trial.</p>");
     }],
     ["task1_read", function() {
-        instr(`<p>Please read both articles and then click / tap 'Continue' to choose, which article uses the most neutral language.</p>`);
+        instr(`<p>Please read both articles. Afterward you will choose, which article uses the most neutral language.</p>` + ((cond.wd || cond.sd > 0 || cond.wd_lr) ? (`<p>Remember: ` + (cond.sd ? `<span class="sd me-2">Biased Sentence</span>` : "") + (cond.wd ? `<span class="wd me-2">Biased Word</span>` : "") + (cond.wd_lr ? `<span class="wd_lr me-2">Feature Word</span>` : "") + (cond.wd_lr ? `<span class="wd wd_lr me-2">Biased Feature Word</span>` : "")) : ``));
         $("#app-button").prop("disabled", true);
         $(".article-navigator").on("click.temp", () => {
             $(".article-navigator").off("click.temp");
@@ -488,7 +488,7 @@ procedure = new Procedure(new Map([
     ["task2_instructions", function() {
         adContent(`<div class='col'><h2>Second Task</h2><p class="mt-3">We now ask you to go a step further and annotate, which sentences and phrases you perceive to be biased. To do so, you will again first learn how to annotate in the app. Afterward, you will read and annotate another article by one of your reporters about a different topic.</div>`);
         $("#article-column").empty();
-        $("#article-column").load("articles/tut2.php", () => {
+        $("#article-column").load("articles/tut2.html", () => {
             prepareTask2();
         });
         $("header").empty();
@@ -504,16 +504,19 @@ procedure = new Procedure(new Map([
         instr("<p>To annotate a sentence as biased, double click / double tap any sentence.</p><p>Try it!</p>");
         control();
         $(".s").one("dblclick.temp", () => {
-            $(".s").off("dblclick.temp");
+            $(".s").off("dblclick.temp").off("dblclick");
+            block($("main, header"));
             control("Continue");
             instr("Very good!");
         });
     }],
     ["tut2_clickPhrase", function() {
+        unblock();
         instr("<p>After having annotated a sentence as biased, you can annotate specific words within the same sentence as biased with a simple click / tap.</p><p>Try it!</p>");
         control();
         $(".sd").children().on("click.temp", () => {
             $(".sd").children().off("click.temp");
+            block($("main, header"));
             control("Continue");
             instr("Very good!");
         });
@@ -522,8 +525,10 @@ procedure = new Procedure(new Map([
         instr("<p>If a phrase you deem biased contains more than one word, simply click / tap all words contained in the phrase.</p>");
     }],
     ["tut2_removeAnnotation", function() {
+        unblock();
         instr("<p>To remove an annotation, repeat the prior action. I.e., click / tap a word again or double click / double tap a sentence again. If you remove the annotation of a biased sentence, any annotations for words contained in that sentence will be removed as well.</p><p>Try to remove an annotation now!</p>");
         control();
+        prepareTask2();
         $(".sd").one("dblclick.temp", () => {
             $(".sd").off("dblclick.temp");
             $(".wd").off("click.temp");
@@ -543,7 +548,7 @@ procedure = new Procedure(new Map([
     }],
     ["task2_start", function() {
         $("#article-column").empty();
-        $("#article-column").load("articles/task2.php", () => {
+        $("#article-column").load("articles/task2.html", () => {
             prepareTask2();
         });
         instr("<p>This article was written by one of your reporters about the <span class='fst-italic'>James Webb Space Telescope</span>.</p>");
@@ -569,7 +574,7 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    procedure.go(step_start);
+    // procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
     //     $(this).load("articles/tut1.php", () => {
     //         if (cond.sd == 2) prepareSD_S();
@@ -577,7 +582,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    // procedure.go("task1_instructions");
+    procedure.go("task1_start");
     //     });
     // });
 });

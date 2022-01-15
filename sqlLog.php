@@ -3,9 +3,9 @@ session_start();
 include("sqlCreds.php");
 
 $target_table = "Results";
-$allowed_cols = ["state","dem_gender","dem_eng","dem_age","dem_school","article_choice","consent","political_stance","sentences_choice","words_choice"];
-$values = array();
-$update = "";
+$allowed_cols = ["step","dem_gender","dem_eng","dem_age","dem_school","article_choice","consent","political_stance","sentences_choice","words_choice"];
+$values = array(time());
+$update = "time=concat(time,',',?),";
 foreach($_POST as $k => $v){
   if(in_array($k,$allowed_cols)){
     $update .= $k."=?,";

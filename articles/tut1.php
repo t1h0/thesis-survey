@@ -1,2 +1,2 @@
 <?php
-include("tut1/0.php");
+include("tut1/".$_POST["index"].".html");
