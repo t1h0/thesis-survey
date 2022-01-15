@@ -574,7 +574,7 @@ procedure = new Procedure(new Map([
 ]));
 
 $(document).ready(function() {
-    // procedure.go(step_start);
+    procedure.go(step_start);
     // $(".carousel-item").each(function(index) {
     //     $(this).load("articles/tut1.php", () => {
     //         if (cond.sd == 2) prepareSD_S();
@@ -582,7 +582,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    procedure.go("task1_start");
+    // procedure.go("task1_start");
     //     });
     // });
 });
