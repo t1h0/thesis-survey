@@ -173,24 +173,23 @@ class Procedure {
         switch (typeof(toState)) {
             case "number":
                 this.state = toState;
-                logSql({ "step": this.state }, () => {
-                    this.proc.get(this.keys[toState])();
-                });
+                this.proc.get(this.keys[toState])();
                 break;
             case "string":
-                this.state = this.keys.indexOf(toState);
-                logSql({ "step": this.state }, () => {
+                if (!isNaN(parseInt(toState))) {
+                    this.state = parseInt(toState);
+                    this.proc.get(this.keys[this.state])();
+                } else {
+                    this.state = this.keys.indexOf(toState);
                     this.proc.get(toState)();
-                });
+                }
                 break;
             default:
                 if (typeof(this.state) !== "undefined") this.state++;
                 else {
                     this.state = 0;
                 };
-                logSql({ "step": this.state }, () => {
-                    this.proc.get(this.keys[this.state])();
-                });
+                this.proc.get(this.keys[this.state])();
         };
     };
 
@@ -222,6 +221,7 @@ procedure = new Procedure(new Map([
         });
     }],
     ["demographics", function() {
+        logSql({ "step": "demographics" });
         adContent(`
         <div class="col"><h2>Demographics</h2>
         <form action="" class="row g-4 mt-3" id="demographics">
@@ -276,6 +276,7 @@ procedure = new Procedure(new Map([
         instr("Please answer all the questions above.");
     }],
     ["political_stance", function() {
+        logSql({ "step": "political_stance" });
         adContent(`
         <div class="col"><h2>Political stance</h2>
         <form action="" class="row g-4 mt-3" id="form_political_stance">
@@ -302,6 +303,7 @@ procedure = new Procedure(new Map([
         instr("Please answer the question above.");
     }],
     ["task1_instructions", function() {
+        logSql({ "step": "task1_instructions" });
         $(".carousel-item").each(function(index) {
             $(this).load("articles/tut1.php", { "index": index }, () => {
                 if (cond.sd == 2) prepareSD_S();
@@ -487,6 +489,7 @@ procedure = new Procedure(new Map([
         });
     }],
     ["task2_instructions", function() {
+        logSql({ "step": "task2_instructions" });
         adContent(`<div class='col'><h2>Second Task</h2><p class="mt-3">We now ask you to go a step further and annotate, which sentences and phrases you perceive to be biased. To do so, you will again first learn how to annotate in the app. Afterward, you will read and annotate another article by one of your reporters about a different topic.</div>`);
         $("#article-column").empty();
         $("#article-column").load("articles/tut2.html", () => {
@@ -508,6 +511,7 @@ procedure = new Procedure(new Map([
         control();
         $(".s").one("dblclick.temp", () => {
             $(".s").off("dblclick.temp").off("dblclick");
+            block($("main, header"));
             control("Continue");
             instr("Very good!");
         });
@@ -518,7 +522,6 @@ procedure = new Procedure(new Map([
         control();
         $(".sd").children().on("click.temp", () => {
             $(".sd").children().off("click.temp");
-            block($("main, header"));
             control("Continue");
             instr("Very good!");
         });
@@ -555,24 +558,22 @@ procedure = new Procedure(new Map([
         });
         instr("<p>This article was written by one of your reporters about the <span class='fst-italic'>James Webb Space Telescope</span>.</p>");
     }],
-    ["task1_choice", function() {
+    ["task2_choice", function() {
         instr(`<p>Please read the article and annotate any sentences and phrases you perceive to be biased like trained before. Once you're finished, click / tap the button below to submit your annotations.</p>`);
         control("Submit", undefined, () => {
             sentences = "";
             words = "";
-            $(".sd").each(function() { sentences += $(this).attr("sdid") + "," });
-            $(".wd").each(function() { words += $(this).attr("wdid") + "," });
+            if (!$(".sd").length) sentences = "0,";
+            else $(".sd").each(function() { sentences += $(this).attr("sdid") + "," });
+            if (!$(".wd").length) words = "0,";
+            else $(".wd").each(function() { words += $(this).attr("wdid") + "," });
             logSql({
                 "sentences_choice": sentences.slice(0, -1),
-                "words_choice": words.slice(0, -1)
-            }, () => procedure.go());
+                "words_choice": words.slice(0, -1),
+                "step": "survey_end"
+            }, () => window.location.href = "surveyEnd.php");
         })
     }],
-    ["survey_end", function() {
-        adContent(`<div class='col'><h2>Thank you!</h2><p class="mt-3">Thank you for participating in this survey. Click here to get back to prolific: <a href="#">https://</a></div>`);
-        instr("");
-        control();
-    }]
 ]));
 
 $(document).ready(function() {
@@ -588,8 +589,3 @@ $(document).ready(function() {
     //     });
     // });
 });
-
-/* TO DO:
-- Record Time (especially at try out)
-- State saves
-*/

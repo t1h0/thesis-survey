@@ -60,8 +60,14 @@ if (isset($_GET["test"])) {
         $sql = $conn->prepare("SELECT * from Results where pid = ?");
         $sql->execute(array($_SESSION["pid"]));
         if ($sql->rowCount() > 0) {
+            $result = $sql->fetch();
+            if ($result["step"] == "survey_end") {
                 echo "You have already participated in this survey.";
                 die();
+            }
+            $cond = $result["cond"];
+            $_SESSION["step"] = $result["step"];
+            $_SESSION["articles"] = array([$result["articleA_pol"], $result["articleA_bias"]], [$result["articleB_pol"], $result["articleB_bias"]]);
         } else {
             // selecting articles
             $_SESSION["articles"] = getArticles();
@@ -83,7 +89,9 @@ if (isset($_GET["test"])) {
             "sd" => in_array($cond, [1, 7, 4, 10]) ? 0 : (in_array($cond, [2,8,5,11]) ? 1 : 2),
         ];
     } catch (PDOException $e) {
-        echo "Error: $e";
+        echo("Something went wrong! Please reload this page.");
+        die();
+        // echo "Error: $e";
     }
 }
 // TODO: Change "survey_end" check to either INT or change databse and step logging
