@@ -236,7 +236,7 @@ procedure = new Procedure(new Map([
             </div>
             <div class="col-12">
                 <h4>What is your level of English proficiency?</h4>
-                <select class="form-select form-select-lg mt-4" id="english" required>
+                <select class="form-select form-select-lg mt-4" id="eng" required>
                     <option selected disabled value="">Please select..</option>
                     <option value=0>Native speaker</option>
                     <option value=1>Non-native speaker</option>
