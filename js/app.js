@@ -146,7 +146,7 @@ function adContent(content) {
 function instr(instruction) {
     $("#app-instructions").html(instruction);
     // Recalculating padding-bottom of article (main)
-    $("main").css("padding-bottom", $("#app").outerHeight());
+    $("main").css("padding-bottom", "calc(" + $("#app").outerHeight() + "+2rem");
     $("#loading-icon").css("transform", "translateX(-50%) translateY(calc(-50% - " + $("#app").outerHeight() + "))");
 };
 
@@ -169,6 +169,7 @@ class Procedure {
 
     go(toState, controlReset = true) {
         if (controlReset) control("Continue");
+        $("main").css("padding-bottom", "calc(" + $("#app").outerHeight() + "+2rem");
         switch (typeof(toState)) {
             case "number":
                 this.state = toState;
@@ -559,7 +560,7 @@ procedure = new Procedure(new Map([
             sentences = "";
             words = "";
             $(".sd").each(function() { sentences += $(this).attr("sdid") + "," });
-            $(".wd").each(function() { sentences += $(this).attr("wdid") + "," });
+            $(".wd").each(function() { words += $(this).attr("wdid") + "," });
             logSql({
                 "sentences_choice": sentences.slice(0, -1),
                 "words_choice": words.slice(0, -1)
