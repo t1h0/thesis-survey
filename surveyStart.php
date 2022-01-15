@@ -86,12 +86,11 @@ if (isset($_GET["test"])) {
         $_SESSION["cond"] = [
             "wd_lr" => $cond >= 7,
             "wd" => ($cond >= 4 && $cond <= 6) || ($cond >= 10 && $cond <= 12),
-            "sd" => in_array($cond, [1, 7, 4, 10]) ? 0 : (in_array($cond, [2,8,5,11]) ? 1 : 2),
+            "sd" => in_array($cond, [1, 7, 4, 10]) ? 0 : (in_array($cond, [2, 8, 5, 11]) ? 1 : 2),
         ];
     } catch (PDOException $e) {
-        echo("Something went wrong! Please reload this page.");
+        echo ("Something went wrong! Please reload this page.");
         die();
         // echo "Error: $e";
     }
 }
-// TODO: Change "survey_end" check to either INT or change databse and step logging

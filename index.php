@@ -11,7 +11,7 @@ include("surveyStart.php");
     <link rel="stylesheet" href="css/style.css">
     <?php
     // including respective css-files
-    if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]){
+    if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]) {
         echo '<link rel="stylesheet" href="css/analysis-bar.css">';
     }
     if ($_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd.css">';
@@ -20,13 +20,13 @@ include("surveyStart.php");
     if ($_SESSION["cond"]["sd"] > 0) {
         echo '<link rel="stylesheet" href="css/sd.css">';
         if ($_SESSION["cond"]["sd"] == 2) echo '<link rel="stylesheet" href="css/sd_s.css">';
-    }     
+    }
     ?>
     <title></title>
 </head>
 
 <body>
-<img id="loading-icon" class="d-none" src="img/loading.svg">
+    <img id="loading-icon" class="d-none" src="img/loading.svg">
     <header class="container-fluid text-center sticky-top system d-none" id="ui">
         <div class="row justify-content-between" id="reader-control">
             <div class="col-3 p-0">
@@ -52,7 +52,7 @@ include("surveyStart.php");
             if ($_SESSION["cond"]["wd_lr"] == true) {
                 include("s/wd_lr.html");
             };
-            if($_SESSION["cond"]["sd"] == 2) include("s/sd_s.html");
+            if ($_SESSION["cond"]["sd"] == 2) include("s/sd_s.html");
             echo "</div>
           ";
         }
@@ -60,7 +60,7 @@ include("surveyStart.php");
     </header>
     <main role="main">
         <div class="container position-relative h-100">
-        <div class="row mt-5" id="additional-content"></div>
+            <div class="row mt-5" id="additional-content"></div>
             <div class="row py-2 system d-none" id="article">
                 <div class="col py-1 px-3" id="article-column">
                     <div id="article-container" class="carousel slide" data-bs-touch="false" data-bs-ride="carousel" data-bs-interval="false">
@@ -88,7 +88,7 @@ include("surveyStart.php");
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/ui.js"></script>
     <script type="text/javascript">
-        cond = <?php echo json_encode($_SESSION["cond"]);?>;
+        cond = <?php echo json_encode($_SESSION["cond"]); ?>;
         testmode = <?php echo json_encode($_SESSION["test"]) ?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
