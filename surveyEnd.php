@@ -1,11 +1,12 @@
 <?php
+die();
 include("sqlCreds.php");
 session_start();
-$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, array(PDO::ATTR_PERSISTENT => true));
+$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 // set the PDO error mode to exception
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $sql = $conn->prepare("SELECT * from Results where pid = ?");
-$sql->execute($_SESSION["pid"]);
+$sql->execute(array("111111111111111111111111"));
 $result = $sql->fetch(PDO::FETCH_ASSOC);
 foreach (["pid", "studyid", "sessionid", "cond", "articleA_pol", "articleA_bias", "articleB_pol", "articleB_bias", "step", "dem_gender", "dem_eng", "dem_age", "dem_school", "article_choice", "consent", "political_stance", "time", "sentences_choice", "words_choice"] as $i) {
     if (!isset($result[$i])) {

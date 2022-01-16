@@ -1,4 +1,6 @@
 <?php
+echo "This survey is not available anymore.";
+die();
 include("surveyStart.php");
 ?>
 <!doctype html>
