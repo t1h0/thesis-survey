@@ -585,7 +585,7 @@ $(document).ready(function() {
     //         // $(".sd, .wd, .wd_lr").addClass("wdsd-hidden");
     //         adContent(null);
     //         unblock();
-    // procedure.go("task1_instructions");
+    // procedure.go("task2_instructions");
     //     });
     // });
 });
