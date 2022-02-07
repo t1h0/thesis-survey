@@ -1,7 +1,10 @@
 <?php
-echo "This survey is not available anymore.";
-die();
-include("surveyStart.php");
+if(isset($_GET["test"])){
+    include("surveyStart.php");
+} else {
+    echo "This survey is not available anymore.";
+    die();
+}
 ?>
 <!doctype html>
 <html>
