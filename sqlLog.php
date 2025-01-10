@@ -1,3 +1,5 @@
+<!-- This script logs any data it gets through AJAX requests for the active participant. -->
+
 <?php
 session_start();
 include("sqlCreds.php");
@@ -5,7 +7,8 @@ include("sqlCreds.php");
 $target_table = "Results";
 $allowed_cols = ["step", "dem_gender", "dem_eng", "dem_age", "dem_school", "article_choice", "consent", "political_stance", "sentences_choice", "words_choice"];
 $values = array(time());
-$update = "time=concat(time,',',?),";
+$update = "time=concat(time,',',?),"; // Each SQL access is time logged for later analysis
+ // Create update string
 foreach ($_POST as $k => $v) {
   if (in_array($k, $allowed_cols)) {
     $update .= $k . "=?,";
@@ -24,5 +27,3 @@ try {
   else array_push($_SESSION["errors"], $e);
   echo 0;
 }
-
-// TODO: DELETE ERROR OUTPUT

@@ -24,6 +24,7 @@ label {
 }
 
 .scrollBlock {
+    /* Blocks page scrolling */
     overflow: hidden;
 }
 
@@ -85,7 +86,7 @@ main {
 }
 
 
-/* Blurs out the scrollable content */
+/* Fades out the scrollable content */
 
 #app-instructions-row::before {
     z-index: 10;
@@ -105,15 +106,7 @@ main {
 }
 
 
-/* .app-show {
-    position: relative !important;
-    z-index: 3000 !important;
-} */
-
-.app-show-highlight {
-    -webkit-animation: pulse 0.8s ease-in-out infinite alternate;
-    animation: pulse 1s ease-in-out infinite alternate;
-}
+/* Component highlighting */
 
 @-webkit-keyframes pulse {
     0% {
@@ -132,6 +125,14 @@ main {
         background: steelblue;
     }
 }
+
+.app-show-highlight {
+    -webkit-animation: pulse 0.8s ease-in-out infinite alternate;
+    animation: pulse 1s ease-in-out infinite alternate;
+}
+
+
+/* --------------------- */
 
 .app-show-temp {
     position: fixed !important;
@@ -165,5 +166,6 @@ main {
 
 .s,
 .w {
+    /* All words and sentences can be clicked on */
     cursor: pointer;
 }

@@ -1,8 +1,10 @@
 .sd {
+    /* For annotated sentences */
     cursor: pointer;
 }
 
 .sd-active {
+    /* For clicked on annotated sentences */
     background-color: lightsteelblue !important;
 }
 

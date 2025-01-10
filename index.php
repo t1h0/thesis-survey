@@ -1,10 +1,5 @@
 <?php
-if(isset($_GET["test"])){
     include("surveyStart.php");
-} else {
-    echo "This survey is not available anymore.";
-    die();
-}
 ?>
 <!doctype html>
 <html>
@@ -16,15 +11,15 @@ if(isset($_GET["test"])){
     <link rel="stylesheet" href="css/style.css">
     <?php
     // including respective css-files
-    if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["wd_e"] || $_SESSION["cond"]["sd_s"]) {
+    if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd"] == 2) {
         echo '<link rel="stylesheet" href="css/analysis-bar.css">';
     }
-    if ($_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd.css">';
-    if ($_SESSION["cond"]["wd_lr"]) echo '<link rel="stylesheet" href="css/wd_lr.css">';
+    if ($_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd.css">'; // Biased phrase detection
+    if ($_SESSION["cond"]["wd_lr"]) echo '<link rel="stylesheet" href="css/wd_lr.css">'; // Discriminative phrase detection
     if ($_SESSION["cond"]["wd_lr"] && $_SESSION["cond"]["wd"]) echo '<link rel="stylesheet" href="css/wd_and_lr.css">';
-    if ($_SESSION["cond"]["sd"] > 0) {
+    if ($_SESSION["cond"]["sd"] > 0) { // Biased sentence detection
         echo '<link rel="stylesheet" href="css/sd.css">';
-        if ($_SESSION["cond"]["sd"] == 2) echo '<link rel="stylesheet" href="css/sd_s.css">';
+        if ($_SESSION["cond"]["sd"] == 2) echo '<link rel="stylesheet" href="css/sd_s.css">'; // Advanced biased sentence detection
     }
     ?>
     <title></title>
@@ -51,7 +46,7 @@ if(isset($_GET["test"])){
             </div>
         </div>
         <?php
-        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd"] == 2) {
+        if ($_SESSION["cond"]["wd_lr"] || $_SESSION["cond"]["sd"] == 2) { //include analysis-bar if discriminative phrase or advanced biased sentence detection are active
             echo '<div class="row justify-content-around mt-0 ui" id="analysis-bar">
           ';
             if ($_SESSION["cond"]["wd_lr"] == true) {
@@ -93,13 +88,13 @@ if(isset($_GET["test"])){
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/ui.js"></script>
     <script type="text/javascript">
+        // Transfer Session variables to Javascript
         cond = <?php echo json_encode($_SESSION["cond"]); ?>;
         testmode = <?php echo json_encode($_SESSION["test"]) ?>;
         step_start = <?php echo json_encode($_SESSION["step"]) ?>;
     </script>
-    <script src="js/app.js"></script>
+    <!-- Dynamic experimental content handling -->
+    <script src="js/app.js"></script> 
 </body>
 
 </html>
-<!-- TODO:
-  * Add failsafe (save intermediate steps) -->
