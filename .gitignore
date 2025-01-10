@@ -1,1 +1,11 @@
 .DS_Store
+
+# Third party dependencies
+css/bootstrap.min.css
+css/bootstrap.min.css.map
+js/bootstrap.bundle.min.js
+js/bootstrap.bundle.min.js.map
+js/jquery-3.6.0.min.js
+
+# Server credentials
+sqlCreds.php
