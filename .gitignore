@@ -1,5 +1,11 @@
 .DS_Store
 
+# Articles
+articles/task1
+articles/tut1
+articles/task2.html
+articles/tut2.html
+
 # Third party dependencies
 css/bootstrap.min.css
 css/bootstrap.min.css.map
