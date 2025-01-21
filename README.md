@@ -1,6 +1,6 @@
 # Thesis survey
 
-My master's thesis' online survey.
+My master's thesis' online survey about visualization of media bias.
 
 ## Setup
 
